@@ -49,7 +49,6 @@
 (define-public (run-job (job-id uint) (job <automation-trait>))
   (let (
     (job-entry (get-job-by-id job-id))
-    (cost-in-diko (* (get cost job-entry) u1000000))
   )
     (asserts! (is-eq (contract-of job) (get contract job-entry)) (ok false))
     (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
@@ -76,8 +75,10 @@
 
 ;; Debits DIKO from the principal's account
 (define-private (debit-account (job-id uint))
-  (begin
-    ;; (try! (as-contract (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token transfer cost-in-diko tx-sender contract-caller none)))
+  (let (
+    (job-entry (get-job-by-id job-id))
+  )
+    ;; (try! (as-contract (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token transfer (get cost job-entry) tx-sender contract-caller none)))
 
     (ok true)
   )
