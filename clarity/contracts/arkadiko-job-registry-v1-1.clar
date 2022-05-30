@@ -25,11 +25,13 @@
   )
 )
 
-;; Debits DIKO from the principal's account
-;; TODO: amount of DIKO is based on cost of the job
-;; See costs-2 contract to calculate cost? 
-(define-public (debit-account (job-id uint))
-  (ok true)
+(define-read-only (get-account-by-owner (owner principal))
+  (default-to
+    {
+      diko: u0
+    }
+    (map-get? accounts { owner: owner })
+  )
 )
 
 (define-public (register-job (contract principal) (used-cost-contract <cost-trait>))
@@ -49,12 +51,39 @@
     (cost-in-diko (* (get cost job-entry) u1000000))
   )
     (asserts! (is-eq (contract-of job) (get contract job-entry)) (ok false))
+
     (try! (contract-call? job run-job))
+    (debit-account job-id)
+  )
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; private functions  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define-public (credit-account (owner principal) (amount uint))
+  (let (
+    (account (get-account-by-owner owner))
+  )
+    ;; (try! (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token transfer amount tx-sender (as-contract tx-sender) none))
+
+    (map-set accounts { owner: owner } { diko: (+ amount (get diko account)) })
+    (ok true)
+  )
+)
+
+;; Debits DIKO from the principal's account
+(define-private (debit-account (job-id uint))
+  (begin
     ;; (try! (as-contract (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token transfer cost-in-diko tx-sender contract-caller none)))
 
     (ok true)
   )
 )
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; admin functions    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define-public (set-cost-contract (contract principal))
   (begin

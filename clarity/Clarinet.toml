@@ -1,30 +1,41 @@
 [project]
 name = "arkadiko-automate"
-requirements = ["SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.staking-helper"]
 authors = ["Arkadiko Team"]
 description = "Arkadiko Automate implements smart contract automation that can be run through a network of off-chain keepers"
 telemetry = false
+cache_dir = "/Users/philip/.clarinet/cache"
 boot_contracts = ["pox", "costs-v2"]
 
-
-# [repl.analysis]
-# passes = ["check_checker"]
-# check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
+[[project.requirements]]
+contract_id = "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token"
 
 [contracts.arkadiko-automation-trait-v1]
 path = "contracts/arkadiko-automation-trait-v1.clar"
 
-[contracts.arkadiko-job-registry-trait-v1]
-path = "contracts/arkadiko-job-registry-trait-v1.clar"
-
 [contracts.arkadiko-job-cost-calculation-trait-v1]
 path = "contracts/arkadiko-job-cost-calculation-trait-v1.clar"
-
-[contracts.arkadiko-job-registry-v1-1]
-path = "contracts/arkadiko-job-registry-v1-1.clar"
 
 [contracts.arkadiko-job-cost-calculation-v1-1]
 path = "contracts/arkadiko-job-cost-calculation-v1-1.clar"
 
+[contracts.arkadiko-job-registry-trait-v1]
+path = "contracts/arkadiko-job-registry-trait-v1.clar"
+
+[contracts.arkadiko-job-registry-v1-1]
+path = "contracts/arkadiko-job-registry-v1-1.clar"
+
 [contracts.job-harvest-alex]
 path = "contracts/job-harvest-alex.clar"
+
+[repl]
+costs_version = 2
+parser_version = 2
+
+[repl.analysis]
+passes = []
+
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false
