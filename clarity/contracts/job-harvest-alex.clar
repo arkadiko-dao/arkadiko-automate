@@ -3,6 +3,9 @@
 (impl-trait .arkadiko-automation-trait-v1.automation-trait)
 (use-trait ft-trait .sip-010-trait-ft-standard.sip-010-trait)
 
+(define-constant ERR-NOT-REGISTERED u999)
+
+(define-data-var contract-owner principal tx-sender)
 (define-data-var last-execution uint block-height)
 (define-data-var execution-interval uint u525)
 (define-data-var reward-cycle uint u28)
@@ -47,6 +50,8 @@
 
 (define-public (withdraw-token (token <ft-trait>) (amount uint))
   (begin
-    (asserts! )
+    (asserts! (get registered (get-registered-token (contract-of token))) (err ERR-NOT-REGISTERED))
+
+    (as-contract (contract-call? token transfer amount tx-sender (var-get contract-owner) none))
   )
 )

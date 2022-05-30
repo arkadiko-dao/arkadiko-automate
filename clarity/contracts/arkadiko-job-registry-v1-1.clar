@@ -14,7 +14,7 @@
       registered: false,
       owner: tx-sender,
       contract: tx-sender,
-      cost: u99999000000
+      cost: u0
     }
     (map-get? jobs { job-id: id })
   )
@@ -30,10 +30,8 @@
 (define-public (register-job (contract principal))
   (let (
     (job-id (+ u1 (var-get last-job-id)))
-    (job-entry (get-job-by-id job-id))
+    (cost (contract-call? .arkadiko-job-cost-calculation-v1-1 calculate-cost contract))
   )
-    (asserts! (not (get registered job-entry)) (err false))
-
     ;; TODO: calculate cost
     ;; https://explorer.stacks.co/txid/0xece8e369310b5ff9b92ef11181ae0d2457ac0c821376d4a96c4998763e22ad04?chain=mainnet
     (map-set jobs { job-id: job-id } { registered: true, owner: tx-sender, contract: contract, cost: u10 })

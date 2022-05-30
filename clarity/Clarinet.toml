@@ -17,8 +17,14 @@ path = "contracts/arkadiko-automation-trait-v1.clar"
 [contracts.arkadiko-job-registry-trait-v1]
 path = "contracts/arkadiko-job-registry-trait-v1.clar"
 
+[contracts.arkadiko-job-cost-calculation-trait-v1]
+path = "contracts/arkadiko-job-cost-calculation-trait-v1.clar"
+
 [contracts.arkadiko-job-registry-v1-1]
 path = "contracts/arkadiko-job-registry-v1-1.clar"
+
+[contracts.arkadiko-job-cost-calculation-v1-1]
+path = "contracts/arkadiko-job-cost-calculation-v1-1.clar"
 
 [contracts.job-harvest-alex]
 path = "contracts/job-harvest-alex.clar"
