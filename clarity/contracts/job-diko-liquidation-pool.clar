@@ -30,7 +30,7 @@
   (begin
     (asserts! (unwrap-panic (check-job)) (ok false))
 
-    (try! (contract-call? .arkadiko-liquidation-rewards-diko-v1-1 add-rewards 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-v1-1))
+    (try! (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-diko-v1-1 add-rewards 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-v1-1))
     (ok true)
   )
 )
