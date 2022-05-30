@@ -7,6 +7,7 @@
 
 (define-constant CONTRACT-OWNER tx-sender)
 (define-constant ERR-NOT-AUTHORIZED u403)
+(define-constant ERR-NOT-REGISTERED u404)
 
 (define-data-var last-job-id uint u0)
 (define-data-var cost-contract principal .arkadiko-job-cost-calculation-v1-1)
@@ -51,6 +52,7 @@
     (cost-in-diko (* (get cost job-entry) u1000000))
   )
     (asserts! (is-eq (contract-of job) (get contract job-entry)) (ok false))
+    (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
 
     (try! (contract-call? job run-job))
     (debit-account job-id)
