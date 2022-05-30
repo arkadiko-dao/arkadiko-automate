@@ -34,7 +34,7 @@
 
 (define-read-only (check-job)
   (begin
-    (asserts! (> block-height (+ (var-get last-execution) (var-get execution-interval))) (ok false))
+    (asserts! (> block-height (+ (var-get last-execution) (var-get execution-interval))) (err false))
 
     (ok true)
   )
