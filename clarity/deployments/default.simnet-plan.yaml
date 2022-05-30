@@ -70,3 +70,7 @@ plan:
             contract-name: job-harvest-alex
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/job-harvest-alex.clar
+        - emulated-contract-publish:
+            contract-name: job-diko-liquidation-pool
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/job-diko-liquidation-pool.clar
