@@ -11,7 +11,7 @@ Execute actions based on certain events
 
 ## Examples
 
-1. Every 524 blocks, harvest ALEX farming rewards and sell for STX/USDA/…
+1. Every 524 blocks, harvest ALEX farming rewards and sell for STX/USDA/... (need LP tokens on contract)
 2. Whenever atALEX goes under the ALEX/atALEX ratio, buy atALEX
 3. When the price of USDA goes under 75 cents, buy X STX
 4. When a Megapont Ape drops under 2000 STX, buy it
