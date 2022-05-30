@@ -3,7 +3,7 @@
 
 (define-trait job-registry-trait
   (
-    (register-job (principal <cost-trait>) (response bool uint))
+    (register-job (principal uint <cost-trait>) (response bool uint))
     (run-job (uint <automation-trait>) (response bool uint))
   )
 )

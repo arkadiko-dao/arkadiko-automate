@@ -11,8 +11,10 @@
 
 (define-data-var last-job-id uint u0)
 (define-data-var cost-contract principal .arkadiko-job-cost-calculation-v1-1)
+(define-data-var minimum-fee uint u10000) ;; 0.01 STX
+
 (define-map accounts { owner: principal } { diko: uint })
-(define-map jobs { job-id: uint } { registered: bool, owner: principal, contract: principal, cost: uint })
+(define-map jobs { job-id: uint } { registered: bool, owner: principal, contract: principal, cost: uint, fee: uint })
 
 (define-read-only (get-job-by-id (id uint))
   (default-to
@@ -20,7 +22,8 @@
       registered: false,
       owner: tx-sender,
       contract: tx-sender,
-      cost: u0
+      cost: u0,
+      fee: u0
     }
     (map-get? jobs { job-id: id })
   )
@@ -35,13 +38,14 @@
   )
 )
 
-(define-public (register-job (contract principal) (used-cost-contract <cost-trait>))
+(define-public (register-job (contract principal) (fee uint) (used-cost-contract <cost-trait>))
   (let (
     (job-id (+ u1 (var-get last-job-id)))
     (cost (contract-call? used-cost-contract calculate-cost contract))
+    (min-fee (min-of (var-get minimum-fee) fee))
   )
     (asserts! (is-eq (var-get cost-contract) (contract-of used-cost-contract)) (err ERR-NOT-AUTHORIZED))
-    (map-set jobs { job-id: job-id } { registered: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost) })
+    (map-set jobs { job-id: job-id } { registered: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee })
     (ok true)
   )
 )
@@ -58,10 +62,6 @@
   )
 )
 
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; private functions  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;
-
 (define-public (credit-account (owner principal) (amount uint))
   (let (
     (account (get-account-by-owner owner))
@@ -72,6 +72,10 @@
     (ok true)
   )
 )
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; private functions  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Debits DIKO from the principal's account
 (define-private (debit-account (job-id uint))
@@ -84,6 +88,13 @@
   )
 )
 
+(define-private (min-of (a uint) (b uint))
+  (if (< a b)
+    a
+    b
+  )
+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; admin functions    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -93,5 +104,13 @@
     (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
 
     (ok (var-set cost-contract contract))
+  )
+)
+
+(define-public (set-minimum-fee (fee uint))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
+
+    (ok (var-set minimum-fee fee))
   )
 )
