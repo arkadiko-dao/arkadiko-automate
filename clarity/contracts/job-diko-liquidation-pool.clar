@@ -18,7 +18,7 @@
 
 (define-read-only (check-job)
   (let (
-    (end-epoch-block (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-diko-v1-1 get-end-epoch-block))
+    (end-epoch-block u1000);; (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-diko-v1-1 get-end-epoch-block))
   )
     (asserts! (>= block-height end-epoch-block) (err false))
 
@@ -30,7 +30,7 @@
   (begin
     (asserts! (unwrap-panic (check-job)) (ok false))
 
-    (try! (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-diko-v1-1 add-rewards 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-v1-1))
+    ;; (try! (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-diko-v1-1 add-rewards 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-v1-1))
     (ok true)
   )
 )
