@@ -17,18 +17,38 @@ Clarinet.test({name: "job registry: register and run job",
       Tx.contractCall("arkadiko-job-registry-v1-1", "register-job", [
         types.principal(Utils.qualifiedName("job-diko-liquidation-pool")),
         types.uint(100000),
-        types.principal(Utils.qualifiedName("arkadiko-job-cost-calculation-v1-1")),        
+        types.principal(Utils.qualifiedName("arkadiko-job-cost-calculation-v1-1")),
+      ], wallet_1.address),
+    ]);
+    block.receipts[0].result.expectOk().expectBool(true);
+
+    let call = chain.callReadOnlyFn("arkadiko-job-registry-v1-1", "get-job-by-id", [types.uint(1)], deployer.address);
+    call.result.expectTuple()['owner'].expectPrincipal('ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5');
+
+    block = chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "run-job", [
+        types.uint(1),
+        types.principal(Utils.qualifiedName("job-diko-liquidation-pool")),
+      ], deployer.address),
+    ]);
+    block.receipts[0].result.expectOk().expectBool(false); // execution not required
+
+    block = chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "register-job", [
+        types.principal(Utils.qualifiedName("job-diko-liquidation-pool-2")),
+        types.uint(100000),
+        types.principal(Utils.qualifiedName("arkadiko-job-cost-calculation-v1-1")),
       ], wallet_1.address),
     ]);
     block.receipts[0].result.expectOk().expectBool(true);
 
     block = chain.mineBlock([
       Tx.contractCall("arkadiko-job-registry-v1-1", "run-job", [
-        types.uint(1),
-        types.principal(Utils.qualifiedName("job-diko-liquidation-pool")),
-      ], wallet_1.address),
+        types.uint(2),
+        types.principal(Utils.qualifiedName("job-diko-liquidation-pool-2")),
+      ], deployer.address),
     ]);
-    block.receipts[0].result.expectOk().expectBool(false); // execution not required
+    block.receipts[0].result.expectOk().expectBool(false);
   }
 });
 
@@ -86,8 +106,8 @@ Clarinet.test({name: "job registry: try running unregistered job",
 //     ]);
 //     block.receipts[0].result.expectOk().expectBool(true);
 
-//     let call = chain.callReadOnlyFn("arkadiko-token", "get-balance", [types.principal(deployer.address)], deployer.address);
-//     call.result.expectOk().expectUint(890000000000);
+    // let call = chain.callReadOnlyFn("arkadiko-token", "get-balance", [types.principal(deployer.address)], deployer.address);
+    // call.result.expectOk().expectUint(890000000000);
 
 //     block = chain.mineBlock([
 //       Tx.contractCall("arkadiko-alex-dual-yield-v1-1", "mint", [

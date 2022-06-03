@@ -12,6 +12,7 @@
 (define-data-var last-job-id uint u0)
 (define-data-var cost-contract principal .arkadiko-job-cost-calculation-v1-1)
 (define-data-var minimum-fee uint u1000) ;; 0.001 STX min fee
+(define-data-var minimum-diko uint u100000000) ;; 100 DIKO
 
 (define-map accounts { owner: principal } { diko: uint })
 (define-map jobs { job-id: uint } { registered: bool, owner: principal, contract: principal, cost: uint, fee: uint })
@@ -38,6 +39,22 @@
   )
 )
 
+(define-read-only (has-minimum-diko (owner principal))
+  (>= (get diko (get-account-by-owner owner)) (var-get minimum-diko))
+)
+
+(define-public (should-run (job-id uint) (job <automation-trait>))
+  (let (
+    (job-entry (get-job-by-id job-id))
+  )
+    (asserts! (is-eq (contract-of job) (get contract job-entry)) (err ERR-NOT-REGISTERED))
+    (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
+    (asserts! (is-eq true (unwrap! (contract-call? job check-job) (ok false))) (ok false))
+
+    (ok true)
+  )
+)
+
 (define-public (register-job (contract principal) (fee uint) (used-cost-contract <cost-trait>))
   (let (
     (job-id (+ u1 (var-get last-job-id)))
@@ -46,17 +63,14 @@
   )
     (asserts! (is-eq (var-get cost-contract) (contract-of used-cost-contract)) (err ERR-NOT-AUTHORIZED))
     (map-set jobs { job-id: job-id } { registered: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee })
+    (var-set last-job-id job-id)
     (ok true)
   )
 )
 
 (define-public (run-job (job-id uint) (job <automation-trait>))
-  (let (
-    (job-entry (get-job-by-id job-id))
-  )
-    (asserts! (is-eq (contract-of job) (get contract job-entry)) (ok false))
-    (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
-    (asserts! (is-eq true (unwrap! (contract-call? job check-job) (ok false))) (ok false))
+  (begin
+    (asserts! (is-eq true (unwrap! (should-run job-id job) (ok false))) (ok false))
 
     (try! (contract-call? job run-job))
     (debit-account job-id)
@@ -82,8 +96,9 @@
 (define-private (debit-account (job-id uint))
   (let (
     (job-entry (get-job-by-id job-id))
+    (sender tx-sender)
   )
-    (try! (as-contract (contract-call? .arkadiko-token transfer (get cost job-entry) tx-sender contract-caller none)))
+    (try! (as-contract (contract-call? .arkadiko-token transfer (get cost job-entry) tx-sender sender none)))
 
     (ok true)
   )
@@ -113,5 +128,13 @@
     (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
 
     (ok (var-set minimum-fee fee))
+  )
+)
+
+(define-public (set-minimum-diko (diko uint))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
+
+    (ok (var-set minimum-diko diko))
   )
 )
