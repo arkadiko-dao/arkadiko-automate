@@ -3,7 +3,6 @@ name = "arkadiko-automate"
 authors = ["Arkadiko Team"]
 description = "Arkadiko Automate implements smart contract automation that can be run through a network of off-chain keepers"
 telemetry = false
-cache_dir = "/Users/philip/.clarinet/cache"
 boot_contracts = ["pox", "costs-v2"]
 
 [[project.requirements]]
