@@ -43,6 +43,7 @@
 (define-public (run-job)
   (begin
     (asserts! (unwrap-panic (check-job)) (ok false))
+    ;; TODO - implement actual logic here
     ;; (try!
     ;;   (contract-call? 'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.staking-helper claim-staking-reward
     ;;     'SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.fwp-wstx-wbtc-50-50-v1-01
