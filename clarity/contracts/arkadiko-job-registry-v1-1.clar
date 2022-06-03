@@ -11,7 +11,7 @@
 
 (define-data-var last-job-id uint u0)
 (define-data-var cost-contract principal .arkadiko-job-cost-calculation-v1-1)
-(define-data-var minimum-fee uint u10000) ;; 0.01 STX
+(define-data-var minimum-fee uint u1000) ;; 0.001 STX min fee
 
 (define-map accounts { owner: principal } { diko: uint })
 (define-map jobs { job-id: uint } { registered: bool, owner: principal, contract: principal, cost: uint, fee: uint })
@@ -56,6 +56,7 @@
   )
     (asserts! (is-eq (contract-of job) (get contract job-entry)) (ok false))
     (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
+    (asserts! (is-eq true (unwrap! (contract-call? job check-job) (ok false))) (ok false))
 
     (try! (contract-call? job run-job))
     (debit-account job-id)
@@ -66,7 +67,7 @@
   (let (
     (account (get-account-by-owner owner))
   )
-    ;; (try! (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token transfer amount tx-sender (as-contract tx-sender) none))
+    (try! (contract-call? .arkadiko-token transfer amount tx-sender (as-contract tx-sender) none))
 
     (map-set accounts { owner: owner } { diko: (+ amount (get diko account)) })
     (ok true)
@@ -82,7 +83,7 @@
   (let (
     (job-entry (get-job-by-id job-id))
   )
-    ;; (try! (as-contract (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token transfer (get cost job-entry) tx-sender contract-caller none)))
+    (try! (as-contract (contract-call? .arkadiko-token transfer (get cost job-entry) tx-sender contract-caller none)))
 
     (ok true)
   )

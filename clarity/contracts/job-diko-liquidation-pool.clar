@@ -20,7 +20,7 @@
   (let (
     (end-epoch-block u1000);; (contract-call? 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-liquidation-rewards-diko-v1-1 get-end-epoch-block))
   )
-    (asserts! (>= block-height end-epoch-block) (err false))
+    (asserts! (>= block-height end-epoch-block) (ok false))
 
     (ok true)
   )

@@ -47,6 +47,10 @@ plan:
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/sip-010-trait-ft-standard.clar
         - emulated-contract-publish:
+            contract-name: arkadiko-dao-token-trait-v1
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko/arkadiko-dao-token-trait-v1.clar
+        - emulated-contract-publish:
             contract-name: arkadiko-automation-trait-v1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/arkadiko-automation-trait-v1.clar
@@ -58,6 +62,10 @@ plan:
             contract-name: arkadiko-job-registry-trait-v1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/arkadiko-job-registry-trait-v1.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-token
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko/arkadiko-token.clar
         - emulated-contract-publish:
             contract-name: arkadiko-job-cost-calculation-v1-1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM

@@ -27,6 +27,14 @@ path = "contracts/arkadiko-job-registry-v1-1.clar"
 [contracts.job-harvest-alex]
 path = "contracts/job-harvest-alex.clar"
 
+## Arkadiko DAO
+[contracts.arkadiko-dao-token-trait-v1]
+path = "contracts/arkadiko/arkadiko-dao-token-trait-v1.clar"
+
+[contracts.arkadiko-token]
+path = "contracts/arkadiko/arkadiko-token.clar"
+
+
 [repl]
 costs_version = 2
 parser_version = 2
