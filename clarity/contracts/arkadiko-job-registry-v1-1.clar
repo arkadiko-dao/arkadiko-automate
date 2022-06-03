@@ -14,7 +14,7 @@
 (define-data-var minimum-fee uint u1000) ;; 0.001 STX min fee
 (define-data-var minimum-diko uint u100000000) ;; 100 DIKO
 
-(define-map accounts { owner: principal } { diko: uint })
+(define-map accounts { owner: principal } { diko: uint, stx: uint })
 (define-map jobs { job-id: uint } { registered: bool, owner: principal, contract: principal, cost: uint, fee: uint })
 
 (define-read-only (get-job-by-id (id uint))
@@ -33,7 +33,8 @@
 (define-read-only (get-account-by-owner (owner principal))
   (default-to
     {
-      diko: u0
+      diko: u0,
+      stx: u0
     }
     (map-get? accounts { owner: owner })
   )
@@ -79,13 +80,14 @@
   )
 )
 
-(define-public (credit-account (owner principal) (amount uint))
+(define-public (credit-account (owner principal) (diko-amount uint) (stx-amount uint))
   (let (
     (account (get-account-by-owner owner))
   )
-    (try! (contract-call? .arkadiko-token transfer amount tx-sender (as-contract tx-sender) none))
+    (try! (contract-call? .arkadiko-token transfer diko-amount tx-sender (as-contract tx-sender) none))
+    (try! (stx-transfer? stx-amount tx-sender (as-contract tx-sender)))
 
-    (map-set accounts { owner: owner } { diko: (+ amount (get diko account)) })
+    (map-set accounts { owner: owner } { diko: (+ diko-amount (get diko account)), stx: (+ stx-amount (get stx account)) })
     (ok true)
   )
 )
@@ -101,6 +103,7 @@
     (sender tx-sender)
   )
     (try! (as-contract (contract-call? .arkadiko-token transfer (get cost job-entry) tx-sender sender none)))
+    (try! (as-contract (stx-transfer? (get fee job-entry) tx-sender sender)))
 
     (ok true)
   )

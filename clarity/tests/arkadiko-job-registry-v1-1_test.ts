@@ -42,6 +42,7 @@ Clarinet.test({name: "job registry: register and run job",
       Tx.contractCall("arkadiko-job-registry-v1-1", "credit-account", [
         types.principal(wallet_1.address),
         types.uint(1000000000),
+        types.uint(1000000000),
       ], wallet_1.address),
     ]);
     block.receipts[0].result.expectOk().expectBool(true);
