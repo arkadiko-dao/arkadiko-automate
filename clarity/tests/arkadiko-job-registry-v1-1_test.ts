@@ -39,6 +39,10 @@ Clarinet.test({name: "job registry: register and run job",
         types.uint(100000),
         types.principal(Utils.qualifiedName("arkadiko-job-cost-calculation-v1-1")),
       ], wallet_1.address),
+      Tx.contractCall("arkadiko-job-registry-v1-1", "credit-account", [
+        types.principal(wallet_1.address),
+        types.uint(1000000000),
+      ], wallet_1.address),
     ]);
     block.receipts[0].result.expectOk().expectBool(true);
 
@@ -48,7 +52,7 @@ Clarinet.test({name: "job registry: register and run job",
         types.principal(Utils.qualifiedName("job-diko-liquidation-pool-2")),
       ], deployer.address),
     ]);
-    block.receipts[0].result.expectOk().expectBool(false);
+    block.receipts[0].result.expectOk().expectBool(true);
   }
 });
 

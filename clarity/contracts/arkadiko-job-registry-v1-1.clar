@@ -43,13 +43,15 @@
   (>= (get diko (get-account-by-owner owner)) (var-get minimum-diko))
 )
 
+;; read-only function to check if we should run the job
 (define-public (should-run (job-id uint) (job <automation-trait>))
   (let (
     (job-entry (get-job-by-id job-id))
   )
     (asserts! (is-eq (contract-of job) (get contract job-entry)) (err ERR-NOT-REGISTERED))
     (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
-    (asserts! (is-eq true (unwrap! (contract-call? job check-job) (ok false))) (ok false))
+    (asserts! (unwrap! (contract-call? job check-job) (ok false)) (ok false))
+    (asserts! (has-minimum-diko (get owner job-entry)) (ok false))
 
     (ok true)
   )
