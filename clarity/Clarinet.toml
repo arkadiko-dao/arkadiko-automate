@@ -5,9 +5,6 @@ description = "Arkadiko Automate implements smart contract automation that can b
 telemetry = false
 boot_contracts = ["pox", "costs-v2"]
 
-[[project.requirements]]
-contract_id = "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-token"
-
 [contracts.arkadiko-automation-trait-v1]
 path = "contracts/arkadiko-automation-trait-v1.clar"
 
