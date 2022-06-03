@@ -15,7 +15,7 @@
 (define-data-var minimum-diko uint u100000000) ;; 100 DIKO
 
 (define-map accounts { owner: principal } { diko: uint, stx: uint })
-(define-map jobs { job-id: uint } { registered: bool, owner: principal, contract: principal, cost: uint, fee: uint })
+(define-map jobs { job-id: uint } { registered: bool, owner: principal, contract: principal, cost: uint, fee: uint, last-executed: uint })
 
 (define-read-only (get-job-by-id (id uint))
   (default-to
@@ -24,7 +24,8 @@
       owner: tx-sender,
       contract: tx-sender,
       cost: u0,
-      fee: u0
+      fee: u0,
+      last-executed: u0
     }
     (map-get? jobs { job-id: id })
   )
@@ -65,17 +66,20 @@
     (min-fee (min-of (var-get minimum-fee) fee))
   )
     (asserts! (is-eq (var-get cost-contract) (contract-of used-cost-contract)) (err ERR-NOT-AUTHORIZED))
-    (map-set jobs { job-id: job-id } { registered: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee })
+    (map-set jobs { job-id: job-id } { registered: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee, last-executed: u0 })
     (var-set last-job-id job-id)
     (ok true)
   )
 )
 
 (define-public (run-job (job-id uint) (job <automation-trait>))
-  (begin
+  (let (
+    (job-entry (get-job-by-id job-id)) 
+  )
     (asserts! (is-eq true (unwrap! (should-run job-id job) (ok false))) (ok false))
 
     (try! (contract-call? job run-job))
+    (map-set jobs { job-id: job-id } (merge job-entry { last-executed: block-height }))
     (debit-account job-id)
   )
 )
