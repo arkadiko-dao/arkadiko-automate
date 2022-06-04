@@ -71,3 +71,37 @@ Clarinet.test({name: "job registry: try running unregistered job",
     block.receipts[0].result.expectOk().expectBool(false);
   }
 });
+
+Clarinet.test({name: "job registry: do not run disabled job",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    let deployer = accounts.get("deployer")!;
+    let wallet_1 = accounts.get("wallet_1")!;
+
+    let     block = chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "register-job", [
+        types.principal(Utils.qualifiedName("job-diko-liquidation-pool-2")),
+        types.uint(100000),
+        types.principal(Utils.qualifiedName("arkadiko-job-cost-calculation-v1-1")),
+      ], wallet_1.address),
+      Tx.contractCall("arkadiko-job-registry-v1-1", "credit-account", [
+        types.principal(wallet_1.address),
+        types.uint(1000000000),
+        types.uint(1000000000),
+      ], wallet_1.address),
+      Tx.contractCall("arkadiko-job-registry-v1-1", "toggle-job-enabled", [
+        types.uint(1)
+      ], wallet_1.address)
+    ]);
+    block.receipts[0].result.expectOk().expectBool(true);
+
+    block = chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "run-job", [
+        types.uint(1),
+        types.principal(Utils.qualifiedName("job-diko-liquidation-pool-2")),
+      ], deployer.address),
+    ]);
+    block.receipts[0].result.expectOk().expectBool(false);
+
+
+  }
+});

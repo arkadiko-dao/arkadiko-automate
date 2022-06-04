@@ -15,12 +15,12 @@
 (define-data-var minimum-diko uint u100000000) ;; 100 DIKO
 
 (define-map accounts { owner: principal } { diko: uint, stx: uint })
-(define-map jobs { job-id: uint } { registered: bool, owner: principal, contract: principal, cost: uint, fee: uint, last-executed: uint })
+(define-map jobs { job-id: uint } { enabled: bool, owner: principal, contract: principal, cost: uint, fee: uint, last-executed: uint })
 
 (define-read-only (get-job-by-id (id uint))
   (default-to
     {
-      registered: false,
+      enabled: false,
       owner: tx-sender,
       contract: tx-sender,
       cost: u0,
@@ -52,6 +52,7 @@
   )
     (asserts! (is-eq (contract-of job) (get contract job-entry)) (err ERR-NOT-REGISTERED))
     (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
+    (asserts! (get enabled job-entry) (ok false))
     (asserts! (unwrap! (contract-call? job check-job) (ok false)) (ok false))
     (asserts! (has-minimum-diko (get owner job-entry)) (ok false))
 
@@ -66,7 +67,7 @@
     (min-fee (min-of (var-get minimum-fee) fee))
   )
     (asserts! (is-eq (var-get cost-contract) (contract-of used-cost-contract)) (err ERR-NOT-AUTHORIZED))
-    (map-set jobs { job-id: job-id } { registered: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee, last-executed: u0 })
+    (map-set jobs { job-id: job-id } { enabled: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee, last-executed: u0 })
     (var-set last-job-id job-id)
     (ok true)
   )
@@ -74,7 +75,7 @@
 
 (define-public (run-job (job-id uint) (job <automation-trait>))
   (let (
-    (job-entry (get-job-by-id job-id)) 
+    (job-entry (get-job-by-id job-id))
   )
     (asserts! (is-eq true (unwrap! (should-run job-id job) (ok false))) (ok false))
 
@@ -92,6 +93,23 @@
     (try! (stx-transfer? stx-amount tx-sender (as-contract tx-sender)))
 
     (map-set accounts { owner: owner } { diko: (+ diko-amount (get diko account)), stx: (+ stx-amount (get stx account)) })
+    (ok true)
+  )
+)
+
+(define-public (toggle-job-enabled (job-id uint))
+  (let (
+    (job-entry (get-job-by-id job-id))
+  )
+    (asserts!
+      (or
+        (is-eq tx-sender (get owner job-entry))
+        (is-eq tx-sender CONTRACT-OWNER)
+      )
+      (err ERR-NOT-AUTHORIZED)
+    )
+
+    (map-set jobs { job-id: job-id } (merge job-entry { enabled: (not (get enabled job-entry)) }))
     (ok true)
   )
 )
