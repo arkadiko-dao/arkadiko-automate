@@ -55,6 +55,10 @@ plan:
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/arkadiko-automation-trait-v1.clar
         - emulated-contract-publish:
+            contract-name: arkadiko-job-executor-trait-v1
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko-job-executor-trait-v1.clar
+        - emulated-contract-publish:
             contract-name: arkadiko-job-cost-calculation-trait-v1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/arkadiko-job-cost-calculation-trait-v1.clar
@@ -74,6 +78,10 @@ plan:
             contract-name: arkadiko-job-registry-v1-1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/arkadiko-job-registry-v1-1.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-job-executor-v1-1
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko-job-executor-v1-1.clar
         - emulated-contract-publish:
             contract-name: job-harvest-alex
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM

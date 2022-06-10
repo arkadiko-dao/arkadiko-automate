@@ -4,6 +4,7 @@
 (impl-trait .arkadiko-job-registry-trait-v1.job-registry-trait)
 (use-trait automation-trait .arkadiko-automation-trait-v1.automation-trait)
 (use-trait cost-trait .arkadiko-job-cost-calculation-trait-v1.cost-calculation-trait)
+(use-trait executor-trait .arkadiko-job-executor-trait-v1.job-executor-trait)
 
 (define-constant CONTRACT-OWNER tx-sender)
 (define-constant ERR-NOT-AUTHORIZED u403)
@@ -11,6 +12,7 @@
 
 (define-data-var last-job-id uint u0)
 (define-data-var cost-contract principal .arkadiko-job-cost-calculation-v1-1)
+(define-data-var executor-contract principal .arkadiko-job-executor-v1-1)
 (define-data-var minimum-fee uint u1000) ;; 0.001 STX min fee
 (define-data-var minimum-diko uint u100000000) ;; 100 DIKO
 
@@ -73,13 +75,14 @@
   )
 )
 
-(define-public (run-job (job-id uint) (job <automation-trait>))
+(define-public (run-job (job-id uint) (job <automation-trait>) (executor <executor-trait>))
   (let (
     (job-entry (get-job-by-id job-id))
   )
+    (asserts! (is-eq (var-get executor-contract) (contract-of executor)) (err ERR-NOT-AUTHORIZED))
     (asserts! (is-eq true (unwrap! (should-run job-id job) (ok false))) (ok false))
 
-    (try! (contract-call? job run-job))
+    (try! (contract-call? executor run job))
     (map-set jobs { job-id: job-id } (merge job-entry { last-executed: block-height }))
     (debit-account job-id)
   )
