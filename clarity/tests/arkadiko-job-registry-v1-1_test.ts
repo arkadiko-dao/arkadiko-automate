@@ -29,6 +29,7 @@ Clarinet.test({name: "job registry: register and run job",
       Tx.contractCall("arkadiko-job-registry-v1-1", "run-job", [
         types.uint(1),
         types.principal(Utils.qualifiedName("job-diko-liquidation-pool")),
+        types.principal(Utils.qualifiedName("arkadiko-job-executor-v1-1")),
       ], deployer.address),
     ]);
     block.receipts[0].result.expectOk().expectBool(false); // execution not required
@@ -51,6 +52,7 @@ Clarinet.test({name: "job registry: register and run job",
       Tx.contractCall("arkadiko-job-registry-v1-1", "run-job", [
         types.uint(2),
         types.principal(Utils.qualifiedName("job-diko-liquidation-pool-2")),
+        types.principal(Utils.qualifiedName("arkadiko-job-executor-v1-1")),
       ], deployer.address),
     ]);
     block.receipts[0].result.expectOk().expectBool(true);
@@ -66,6 +68,7 @@ Clarinet.test({name: "job registry: try running unregistered job",
       Tx.contractCall("arkadiko-job-registry-v1-1", "run-job", [
         types.uint(1),
         types.principal(Utils.qualifiedName("job-diko-liquidation-pool")),
+        types.principal(Utils.qualifiedName("arkadiko-job-executor-v1-1")),
       ], wallet_1.address),
     ]);
     block.receipts[0].result.expectOk().expectBool(false);
@@ -98,6 +101,7 @@ Clarinet.test({name: "job registry: do not run disabled job",
       Tx.contractCall("arkadiko-job-registry-v1-1", "run-job", [
         types.uint(1),
         types.principal(Utils.qualifiedName("job-diko-liquidation-pool-2")),
+        types.principal(Utils.qualifiedName("arkadiko-job-executor-v1-1")),
       ], deployer.address),
     ]);
     block.receipts[0].result.expectOk().expectBool(false);
