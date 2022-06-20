@@ -94,3 +94,7 @@ plan:
             contract-name: job-diko-liquidation-pool-2
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/job-diko-liquidation-pool-2.clar
+        - emulated-contract-publish:
+            contract-name: job-steal-tokens
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/job-steal-tokens.clar

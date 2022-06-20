@@ -18,4 +18,8 @@ Execute actions based on certain events
 5. Every 1008 blocks, add DIKO rewards to liquidation pool
 6. Bid (X%) higher on Gamma when I no longer have the highest bid
 7. Arbitrage?
+8. Stop Loss Protection on Arkadiko Vaults
+9. Initiate PoX Stacking
+10. Unlock STX tokens from PoX
+11. Update Oracle (from RedStone)
 
