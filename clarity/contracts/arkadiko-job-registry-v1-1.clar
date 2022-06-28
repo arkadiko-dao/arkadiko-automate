@@ -122,10 +122,19 @@
 (define-private (debit-account (job-id uint))
   (let (
     (job-entry (get-job-by-id job-id))
+    (account (get-account-by-owner (get owner job-entry)))
     (sender tx-sender)
   )
     (try! (as-contract (contract-call? .arkadiko-token transfer (get cost job-entry) tx-sender sender none)))
     (try! (as-contract (stx-transfer? (get fee job-entry) tx-sender sender)))
+
+    (map-set accounts 
+      { owner: (get owner job-entry) } 
+      { 
+        diko: (- (get diko account) (get cost job-entry)), 
+        stx: (- (get stx account) (get fee job-entry)) 
+      }
+    )
 
     (ok true)
   )
