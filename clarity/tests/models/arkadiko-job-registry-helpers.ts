@@ -21,6 +21,11 @@ class JobRegistry {
     this.deployer = deployer;
   }
 
+  getContractInfo() {
+    return this.chain.callReadOnlyFn("arkadiko-job-registry-v1-1", "get-contract-info", [
+    ], this.deployer.address);
+  }
+
   getJobById(jobId: number) {
     return this.chain.callReadOnlyFn("arkadiko-job-registry-v1-1", "get-job-by-id", [
       types.uint(jobId),

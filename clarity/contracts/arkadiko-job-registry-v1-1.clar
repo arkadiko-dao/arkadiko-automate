@@ -46,6 +46,17 @@
   )
 )
 
+(define-read-only (get-contract-info)
+  {
+    last-job-id: (var-get last-job-id),
+    cost-contract: (var-get cost-contract),
+    executor-contract: (var-get executor-contract),
+    minimum-fee: (var-get minimum-fee),
+    contract-enabled: (var-get contract-enabled),
+    withdraw-enabled: (var-get withdraw-enabled)
+  }
+)
+
 ;; read-only function to check if we should run the job
 (define-public (should-run (job-id uint) (job <automation-trait>))
   (let (

@@ -30,6 +30,14 @@ Clarinet.test({name: "job registry: register job",
     call.result.expectTuple()['fee'].expectUintWithDecimals(0.1);
     call.result.expectTuple()['last-executed'].expectUint(0);
 
+    call = await jobRegistry.getContractInfo();
+    call.result.expectTuple()['last-job-id'].expectUint(1);
+    call.result.expectTuple()['cost-contract'].expectPrincipal(Utils.qualifiedName("arkadiko-job-cost-calculation-v1-1"));
+    call.result.expectTuple()['executor-contract'].expectPrincipal(Utils.qualifiedName("arkadiko-job-executor-v1-1"));
+    call.result.expectTuple()['minimum-fee'].expectUintWithDecimals(0.001);
+    call.result.expectTuple()['contract-enabled'].expectBool(true);
+    call.result.expectTuple()['withdraw-enabled'].expectBool(false);
+
     result = jobRegistry.runJob(deployer, 1, "job-diko-liquidation-pool", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(false); // execution not required
   }
@@ -56,6 +64,9 @@ Clarinet.test({name: "job registry: register and run job",
 
     result = jobRegistry.runJob(deployer, 2, "job-diko-liquidation-pool-2", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(true);
+
+    let call = await jobRegistry.getContractInfo();
+    call.result.expectTuple()['last-job-id'].expectUint(2);
   }
 });
 
@@ -130,6 +141,9 @@ Clarinet.test({name: "job registry: credit account and withdraw",
     result = jobRegistry.setWithdrawEnabled(true);
     result.expectOk().expectBool(true);
 
+    call = await jobRegistry.getContractInfo();
+    call.result.expectTuple()['withdraw-enabled'].expectBool(true);
+
     // Withdraw too much
     result = jobRegistry.withdrawAccount(wallet_1, 2000, 1000);
     result.expectErr().expectUint(403);
@@ -171,6 +185,9 @@ Clarinet.test({name: "job registry: register job with fee below minimum",
 
     result = jobRegistry.setMinimumFee(0.005);
     result.expectOk().expectBool(true);
+
+    call = await jobRegistry.getContractInfo();
+    call.result.expectTuple()['minimum-fee'].expectUintWithDecimals(0.005);
 
     result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool", 0.00001, "arkadiko-job-cost-calculation-v1-1");
     result.expectOk().expectBool(true);
@@ -218,6 +235,9 @@ Clarinet.test({name: "job registry: disable contract",
     result = jobRegistry.setContractEnabled(false);
     result.expectOk().expectBool(true);
 
+    let call = await jobRegistry.getContractInfo();
+    call.result.expectTuple()['contract-enabled'].expectBool(false);
+
     result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool", 0.01, "arkadiko-job-cost-calculation-v1-1");
     result.expectErr().expectUint(405);
 
@@ -242,13 +262,16 @@ Clarinet.test({name: "job registry: update cost contract",
     let result = jobRegistry.setCostContract("arkadiko-job-cost-calculation-test");
     result.expectOk().expectBool(true);
 
+    let call = await jobRegistry.getContractInfo();
+    call.result.expectTuple()['cost-contract'].expectPrincipal(Utils.qualifiedName("arkadiko-job-cost-calculation-test"));
+
     result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool", 0.01, "arkadiko-job-cost-calculation-v1-1");
     result.expectErr().expectUint(403);
 
     result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool", 0.01, "arkadiko-job-cost-calculation-test");
     result.expectOk().expectBool(true);
 
-    let call = await jobRegistry.getJobById(1);
+    call = await jobRegistry.getJobById(1);
     call.result.expectTuple()['cost'].expectUintWithDecimals(9.99);
   }
 });
