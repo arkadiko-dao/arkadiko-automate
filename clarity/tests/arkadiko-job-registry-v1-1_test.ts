@@ -91,6 +91,78 @@ Clarinet.test({name: "job registry: do not run disabled job",
   }
 });
 
+Clarinet.test({name: "job registry: credit account and withdraw",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    let deployer = accounts.get("deployer")!;
+    let wallet_1 = accounts.get("wallet_1")!;
+
+    let jobRegistry = new JobRegistry(chain, deployer);
+
+    let call = await jobRegistry.getAccountByOwner(wallet_1.address);
+    call.result.expectTuple()['diko'].expectUintWithDecimals(0);
+    call.result.expectTuple()['stx'].expectUintWithDecimals(0);
+
+    let result = jobRegistry.creditAccount(wallet_1, 0, 0);
+    result.expectOk().expectBool(true);
+
+    call = await jobRegistry.getAccountByOwner(wallet_1.address);
+    call.result.expectTuple()['diko'].expectUintWithDecimals(0);
+    call.result.expectTuple()['stx'].expectUintWithDecimals(0);
+
+    result = jobRegistry.creditAccount(wallet_1, 1000, 0);
+    result.expectOk().expectBool(true);
+
+    call = await jobRegistry.getAccountByOwner(wallet_1.address);
+    call.result.expectTuple()['diko'].expectUintWithDecimals(1000);
+    call.result.expectTuple()['stx'].expectUintWithDecimals(0);
+
+    result = jobRegistry.creditAccount(wallet_1, 0, 1000);
+    result.expectOk().expectBool(true);
+
+    call = await jobRegistry.getAccountByOwner(wallet_1.address);
+    call.result.expectTuple()['diko'].expectUintWithDecimals(1000);
+    call.result.expectTuple()['stx'].expectUintWithDecimals(1000);
+
+    // Withdraw not enabled 
+    result = jobRegistry.withdrawAccount(wallet_1, 0, 1000);
+    result.expectErr().expectUint(406);
+
+    result = jobRegistry.setWithdrawEnabled(true);
+    result.expectOk().expectBool(true);
+
+    // Withdraw too much
+    result = jobRegistry.withdrawAccount(wallet_1, 2000, 1000);
+    result.expectErr().expectUint(403);
+
+    call = await jobRegistry.getAccountByOwner(wallet_1.address);
+    call.result.expectTuple()['diko'].expectUintWithDecimals(1000);
+    call.result.expectTuple()['stx'].expectUintWithDecimals(1000);
+
+    // Withdraw all
+    result = jobRegistry.withdrawAccount(wallet_1, 1000, 1000);
+    result.expectOk().expectBool(true);
+
+    call = await jobRegistry.getAccountByOwner(wallet_1.address);
+    call.result.expectTuple()['diko'].expectUintWithDecimals(0);
+    call.result.expectTuple()['stx'].expectUintWithDecimals(0);
+  }
+});
+
+Clarinet.test({name: "job registry: register job with fee below minimum",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    let deployer = accounts.get("deployer")!;
+    let wallet_1 = accounts.get("wallet_1")!;
+
+    let jobRegistry = new JobRegistry(chain, deployer);
+
+    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool", 0.00001, "arkadiko-job-cost-calculation-v1-1");
+    result.expectOk().expectBool(true);
+
+    let call = await jobRegistry.getJobById(1);
+    call.result.expectTuple()['fee'].expectUintWithDecimals(0.001);
+  }
+});
+
 Clarinet.test({name: "job registry: try stealing tokens",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     let deployer = accounts.get("deployer")!;

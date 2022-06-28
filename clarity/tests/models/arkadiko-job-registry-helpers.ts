@@ -27,6 +27,11 @@ class JobRegistry {
     ], this.deployer.address);
   }
 
+  getAccountByOwner(owner: string) {
+    return this.chain.callReadOnlyFn("arkadiko-job-registry-v1-1", "get-account-by-owner", [
+      types.principal(owner),
+    ], this.deployer.address);
+  }
 
   registerJob(sender: Account, contract: string, fee: number, costCalculator: string) {
     let block = this.chain.mineBlock([
@@ -60,6 +65,16 @@ class JobRegistry {
     ]);
     return block.receipts[0].result;
   }
+
+  withdrawAccount(sender: Account, diko: number, stx: number) {
+    let block = this.chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "withdraw-account", [
+        types.uint(diko * 1000000),
+        types.uint(stx * 1000000),
+      ], sender.address),
+    ]);
+    return block.receipts[0].result;
+  }
   
   toggleJobEnabled(sender: Account, jobId: number) {
     let block = this.chain.mineBlock([
@@ -70,5 +85,13 @@ class JobRegistry {
     return block.receipts[0].result;
   }
 
+  setWithdrawEnabled(enabled: boolean) {
+    let block = this.chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "set-withdraw-enabled", [
+        types.bool(enabled),
+      ], this.deployer.address),
+    ]);
+    return block.receipts[0].result;
+  }
 }
 export { JobRegistry };
