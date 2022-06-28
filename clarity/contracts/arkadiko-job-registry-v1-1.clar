@@ -89,8 +89,14 @@
   (let (
     (account (get-account-by-owner owner))
   )
-    (try! (contract-call? .arkadiko-token transfer diko-amount tx-sender (as-contract tx-sender) none))
-    (try! (stx-transfer? stx-amount tx-sender (as-contract tx-sender)))
+    (if (is-eq diko-amount u0)
+      false
+      (try! (contract-call? .arkadiko-token transfer diko-amount tx-sender (as-contract tx-sender) none))
+    )
+    (if (is-eq stx-amount u0)
+      false
+      (try! (stx-transfer? stx-amount tx-sender (as-contract tx-sender)))
+    )
 
     (map-set accounts { owner: owner } { diko: (+ diko-amount (get diko account)), stx: (+ stx-amount (get stx account)) })
     (ok true)
