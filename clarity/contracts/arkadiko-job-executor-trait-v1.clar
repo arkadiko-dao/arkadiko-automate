@@ -2,7 +2,7 @@
 
 (define-trait job-executor-trait
   (
-    ;; initialize contract values
+    ;; run automation
     (run (<automation-trait>) (response bool uint))
   )
 )
