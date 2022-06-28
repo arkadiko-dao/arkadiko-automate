@@ -16,7 +16,6 @@
 (define-data-var cost-contract principal .arkadiko-job-cost-calculation-v1-1)
 (define-data-var executor-contract principal .arkadiko-job-executor-v1-1)
 (define-data-var minimum-fee uint u1000) ;; 0.001 STX min fee
-(define-data-var minimum-diko uint u100000000) ;; 100 DIKO
 (define-data-var contract-enabled bool true)
 (define-data-var withdraw-enabled bool false)
 
