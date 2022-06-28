@@ -9,12 +9,16 @@
 (define-constant CONTRACT-OWNER tx-sender)
 (define-constant ERR-NOT-AUTHORIZED u403)
 (define-constant ERR-NOT-REGISTERED u404)
+(define-constant ERR-CONTRACT-DISABLED u405)
+(define-constant ERR-WITHDRAW-DISABLED u406)
 
 (define-data-var last-job-id uint u0)
 (define-data-var cost-contract principal .arkadiko-job-cost-calculation-v1-1)
 (define-data-var executor-contract principal .arkadiko-job-executor-v1-1)
 (define-data-var minimum-fee uint u1000) ;; 0.001 STX min fee
 (define-data-var minimum-diko uint u100000000) ;; 100 DIKO
+(define-data-var contract-enabled bool true)
+(define-data-var withdraw-enabled bool false)
 
 (define-map accounts { owner: principal } { diko: uint, stx: uint })
 (define-map jobs { job-id: uint } { enabled: bool, owner: principal, contract: principal, cost: uint, fee: uint, last-executed: uint })
@@ -48,6 +52,7 @@
   (let (
     (job-entry (get-job-by-id job-id))
   )
+    (asserts! (var-get contract-enabled) (err ERR-CONTRACT-DISABLED))
     (asserts! (is-eq (contract-of job) (get contract job-entry)) (err ERR-NOT-REGISTERED))
     (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
     (asserts! (get enabled job-entry) (ok false))
@@ -65,6 +70,7 @@
     (cost (contract-call? used-cost-contract calculate-cost contract))
     (min-fee (min-of (var-get minimum-fee) fee))
   )
+    (asserts! (var-get contract-enabled) (err ERR-CONTRACT-DISABLED))
     (asserts! (is-eq (var-get cost-contract) (contract-of used-cost-contract)) (err ERR-NOT-AUTHORIZED))
     (map-set jobs { job-id: job-id } { enabled: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee, last-executed: u0 })
     (var-set last-job-id job-id)
@@ -76,6 +82,7 @@
   (let (
     (job-entry (get-job-by-id job-id))
   )
+    (asserts! (var-get contract-enabled) (err ERR-CONTRACT-DISABLED))
     (asserts! (is-eq (var-get executor-contract) (contract-of executor)) (err ERR-NOT-AUTHORIZED))
     (asserts! (is-eq true (unwrap! (should-run job-id job) (ok false))) (ok false))
 
@@ -89,6 +96,7 @@
   (let (
     (account (get-account-by-owner owner))
   )
+    (asserts! (var-get contract-enabled) (err ERR-CONTRACT-DISABLED))
     (if (is-eq diko-amount u0)
       false
       (try! (contract-call? .arkadiko-token transfer diko-amount tx-sender (as-contract tx-sender) none))
@@ -178,5 +186,21 @@
     (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
 
     (ok (var-set minimum-diko diko))
+  )
+)
+
+(define-public (set-contract-enabled (enabled bool))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
+
+    (ok (var-set contract-enabled enabled))
+  )
+)
+
+(define-public (set-withdraw-enabled (enabled bool))
+  (begin
+    (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
+
+    (ok (var-set withdraw-enabled enabled))
   )
 )
