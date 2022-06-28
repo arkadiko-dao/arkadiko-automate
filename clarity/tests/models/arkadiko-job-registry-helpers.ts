@@ -85,6 +85,15 @@ class JobRegistry {
     return block.receipts[0].result;
   }
 
+  setMinimumFee(fee: number) {
+    let block = this.chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "set-minimum-fee", [
+        types.uint(fee * 1000000),
+      ], this.deployer.address),
+    ]);
+    return block.receipts[0].result;
+  }
+
   setWithdrawEnabled(enabled: boolean) {
     let block = this.chain.mineBlock([
       Tx.contractCall("arkadiko-job-registry-v1-1", "set-withdraw-enabled", [
@@ -93,5 +102,15 @@ class JobRegistry {
     ]);
     return block.receipts[0].result;
   }
+
+  setContractEnabled(enabled: boolean) {
+    let block = this.chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "set-contract-enabled", [
+        types.bool(enabled),
+      ], this.deployer.address),
+    ]);
+    return block.receipts[0].result;
+  }
+
 }
 export { JobRegistry };
