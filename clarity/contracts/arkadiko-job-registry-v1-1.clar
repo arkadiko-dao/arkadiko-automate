@@ -111,6 +111,30 @@
   )
 )
 
+(define-public (withdraw-account (diko-amount uint) (stx-amount uint))
+  (let (
+    (owner tx-sender)
+    (account (get-account-by-owner owner))
+  )
+    (asserts! (var-get contract-enabled) (err ERR-CONTRACT-DISABLED))
+    (asserts! (var-get withdraw-enabled) (err ERR-WITHDRAW-DISABLED))
+    (asserts! (<= diko-amount (get diko account)) (err ERR-NOT-AUTHORIZED))
+    (asserts! (<= stx-amount (get stx account)) (err ERR-NOT-AUTHORIZED))
+
+    (if (is-eq diko-amount u0)
+      false
+      (try! (as-contract (contract-call? .arkadiko-token transfer diko-amount tx-sender owner none)))
+    )
+    (if (is-eq stx-amount u0)
+      false
+      (try! (as-contract (stx-transfer? stx-amount tx-sender owner)))
+    )
+
+    (map-set accounts { owner: owner } { diko: (- (get diko account) diko-amount), stx: (+ (get stx account) stx-amount) })
+    (ok true)
+  )
+)
+
 (define-public (toggle-job-enabled (job-id uint))
   (let (
     (job-entry (get-job-by-id job-id))
