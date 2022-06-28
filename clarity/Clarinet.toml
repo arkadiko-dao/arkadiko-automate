@@ -35,6 +35,9 @@ path = "contracts/arkadiko-job-registry-v1-1.clar"
 [contracts.arkadiko-job-executor-v1-1]
 path = "contracts/arkadiko-job-executor-v1-1.clar"
 
+[contracts.arkadiko-job-executor-test]
+path = "contracts/tests/arkadiko-job-executor-test.clar"
+
 [contracts.arkadiko-job-cost-calculation-test]
 path = "contracts/tests/arkadiko-job-cost-calculation-test.clar"
 
@@ -50,6 +53,8 @@ path = "contracts/job-diko-liquidation-pool.clar"
 [contracts.job-diko-liquidation-pool-2]
 path = "contracts/job-diko-liquidation-pool-2.clar"
 
+[contracts.job-steal-tokens]
+path = "contracts/job-steal-tokens.clar"
 
 ## Arkadiko DAO
 
