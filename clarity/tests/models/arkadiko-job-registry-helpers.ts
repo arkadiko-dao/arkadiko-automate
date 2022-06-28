@@ -94,6 +94,15 @@ class JobRegistry {
     return block.receipts[0].result;
   }
 
+  setCostContract(contract: string) {
+    let block = this.chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "set-cost-contract", [
+        types.principal(Utils.qualifiedName(contract)),
+      ], this.deployer.address),
+    ]);
+    return block.receipts[0].result;
+  }
+
   setWithdrawEnabled(enabled: boolean) {
     let block = this.chain.mineBlock([
       Tx.contractCall("arkadiko-job-registry-v1-1", "set-withdraw-enabled", [

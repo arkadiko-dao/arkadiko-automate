@@ -232,6 +232,27 @@ Clarinet.test({name: "job registry: disable contract",
   }
 });
 
+Clarinet.test({name: "job registry: update cost contract",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    let deployer = accounts.get("deployer")!;
+    let wallet_1 = accounts.get("wallet_1")!;
+
+    let jobRegistry = new JobRegistry(chain, deployer);
+
+    let result = jobRegistry.setCostContract("arkadiko-job-cost-calculation-test");
+    result.expectOk().expectBool(true);
+
+    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool", 0.01, "arkadiko-job-cost-calculation-v1-1");
+    result.expectErr().expectUint(403);
+
+    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool", 0.01, "arkadiko-job-cost-calculation-test");
+    result.expectOk().expectBool(true);
+
+    let call = await jobRegistry.getJobById(1);
+    call.result.expectTuple()['cost'].expectUintWithDecimals(9.99);
+  }
+});
+
 Clarinet.test({name: "job registry: try stealing tokens",
   async fn(chain: Chain, accounts: Map<string, Account>) {
     let deployer = accounts.get("deployer")!;

@@ -5,25 +5,54 @@ description = "Arkadiko Automate implements smart contract automation that can b
 telemetry = false
 boot_contracts = ["pox", "costs-v2"]
 
+
+## Traits
+
+[contracts.sip-010-trait-ft-standard]
+path = "contracts/sip-010-trait-ft-standard.clar"
+
 [contracts.arkadiko-automation-trait-v1]
 path = "contracts/arkadiko-automation-trait-v1.clar"
 
 [contracts.arkadiko-job-cost-calculation-trait-v1]
 path = "contracts/arkadiko-job-cost-calculation-trait-v1.clar"
 
-[contracts.arkadiko-job-cost-calculation-v1-1]
-path = "contracts/arkadiko-job-cost-calculation-v1-1.clar"
+[contracts.arkadiko-job-executor-trait-v1]
+path = "contracts/arkadiko-job-executor-trait-v1.clar"
 
 [contracts.arkadiko-job-registry-trait-v1]
 path = "contracts/arkadiko-job-registry-trait-v1.clar"
 
+
+## Contracts
+
+[contracts.arkadiko-job-cost-calculation-v1-1]
+path = "contracts/arkadiko-job-cost-calculation-v1-1.clar"
+
 [contracts.arkadiko-job-registry-v1-1]
 path = "contracts/arkadiko-job-registry-v1-1.clar"
+
+[contracts.arkadiko-job-executor-v1-1]
+path = "contracts/arkadiko-job-executor-v1-1.clar"
+
+[contracts.arkadiko-job-cost-calculation-test]
+path = "contracts/tests/arkadiko-job-cost-calculation-test.clar"
+
+
+## Jobs
 
 [contracts.job-harvest-alex]
 path = "contracts/job-harvest-alex.clar"
 
+[contracts.job-diko-liquidation-pool]
+path = "contracts/job-diko-liquidation-pool.clar"
+
+[contracts.job-diko-liquidation-pool-2]
+path = "contracts/job-diko-liquidation-pool-2.clar"
+
+
 ## Arkadiko DAO
+
 [contracts.arkadiko-dao-token-trait-v1]
 path = "contracts/arkadiko/arkadiko-dao-token-trait-v1.clar"
 
