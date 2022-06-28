@@ -43,10 +43,6 @@
   )
 )
 
-(define-read-only (has-minimum-diko (owner principal))
-  (>= (get diko (get-account-by-owner owner)) (var-get minimum-diko))
-)
-
 ;; read-only function to check if we should run the job
 (define-public (should-run (job-id uint) (job <automation-trait>))
   (let (
@@ -56,7 +52,8 @@
     (asserts! (> (get cost job-entry) u0) (err ERR-NOT-REGISTERED))
     (asserts! (get enabled job-entry) (ok false))
     (asserts! (unwrap! (contract-call? job check-job) (ok false)) (ok false))
-    (asserts! (has-minimum-diko (get owner job-entry)) (ok false))
+    (asserts! (>= (get diko (get-account-by-owner (get owner job-entry))) (get cost job-entry)) (ok false))
+    (asserts! (>= (get stx (get-account-by-owner (get owner job-entry))) (get fee job-entry)) (ok false))
 
     (ok true)
   )
