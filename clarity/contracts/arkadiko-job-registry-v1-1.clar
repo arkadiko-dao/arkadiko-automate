@@ -204,14 +204,6 @@
   )
 )
 
-(define-public (set-minimum-diko (diko uint))
-  (begin
-    (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
-
-    (ok (var-set minimum-diko diko))
-  )
-)
-
 (define-public (set-contract-enabled (enabled bool))
   (begin
     (asserts! (is-eq tx-sender CONTRACT-OWNER) (err ERR-NOT-AUTHORIZED))
