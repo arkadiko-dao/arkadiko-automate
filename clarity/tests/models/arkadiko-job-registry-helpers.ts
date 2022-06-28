@@ -38,6 +38,16 @@ class JobRegistry {
     ], this.deployer.address);
   }
 
+  shouldRun(jobId: number, contract: string) {
+    let block = this.chain.mineBlock([
+      Tx.contractCall("arkadiko-job-registry-v1-1", "should-run", [
+        types.uint(jobId),
+        types.principal(Utils.qualifiedName(contract)),
+      ], this.deployer.address),
+    ]);
+    return block.receipts[0].result;
+  }
+
   registerJob(sender: Account, contract: string, fee: number, costCalculator: string) {
     let block = this.chain.mineBlock([
       Tx.contractCall("arkadiko-job-registry-v1-1", "register-job", [

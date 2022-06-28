@@ -38,6 +38,9 @@ Clarinet.test({name: "job registry: register job",
     call.result.expectTuple()['contract-enabled'].expectBool(true);
     call.result.expectTuple()['withdraw-enabled'].expectBool(false);
 
+    result = jobRegistry.shouldRun(1, "job-diko-liquidation-pool");
+    result.expectOk().expectBool(false); // execution not required
+
     result = jobRegistry.runJob(deployer, 1, "job-diko-liquidation-pool", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(false); // execution not required
   }
@@ -241,6 +244,9 @@ Clarinet.test({name: "job registry: disable contract",
     result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool", 0.01, "arkadiko-job-cost-calculation-v1-1");
     result.expectErr().expectUint(405);
 
+    result = jobRegistry.shouldRun(1, "job-diko-liquidation-pool");
+    result.expectErr().expectUint(405);
+
     result = jobRegistry.runJob(wallet_1, 1, "job-diko-liquidation-pool", "arkadiko-job-executor-v1-1");
     result.expectErr().expectUint(405);
 
@@ -309,6 +315,9 @@ Clarinet.test({name: "job registry: run job with wrong contract",
 
     result = jobRegistry.creditAccount(wallet_1, 1000, 1000);
     result.expectOk().expectBool(true);
+
+    result = jobRegistry.shouldRun(1, "job-diko-liquidation-pool");
+    result.expectErr().expectUint(404);
 
     result = jobRegistry.runJob(wallet_1, 1, "job-diko-liquidation-pool", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(false);
