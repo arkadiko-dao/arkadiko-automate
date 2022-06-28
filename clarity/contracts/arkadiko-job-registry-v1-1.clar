@@ -67,7 +67,7 @@
   (let (
     (job-id (+ u1 (var-get last-job-id)))
     (cost (contract-call? used-cost-contract calculate-cost contract))
-    (min-fee (min-of (var-get minimum-fee) fee))
+    (min-fee (max-of (var-get minimum-fee) fee))
   )
     (asserts! (var-get contract-enabled) (err ERR-CONTRACT-DISABLED))
     (asserts! (is-eq (var-get cost-contract) (contract-of used-cost-contract)) (err ERR-NOT-AUTHORIZED))
@@ -177,8 +177,8 @@
   )
 )
 
-(define-private (min-of (a uint) (b uint))
-  (if (< a b)
+(define-private (max-of (a uint) (b uint))
+  (if (> a b)
     a
     b
   )
