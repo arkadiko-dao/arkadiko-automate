@@ -129,7 +129,7 @@
       (try! (as-contract (stx-transfer? stx-amount tx-sender owner)))
     )
 
-    (map-set accounts { owner: owner } { diko: (- (get diko account) diko-amount), stx: (+ (get stx account) stx-amount) })
+    (map-set accounts { owner: owner } { diko: (- (get diko account) diko-amount), stx: (- (get stx account) stx-amount) })
     (ok true)
   )
 )
