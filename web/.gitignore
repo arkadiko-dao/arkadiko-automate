@@ -1,0 +1,10 @@
+dist/
+node_modules/
+tests/screenshots/*
+.env
+.env.regtest
+.next
+.idea
+.DS_Store
+.jscpd.json
+report/

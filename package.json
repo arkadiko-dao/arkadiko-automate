@@ -1,0 +1,12 @@
+{
+  "name": "arkadiko-automate",
+  "version": "0.1.0",
+  "author": {
+    "name": "Arkadiko-Automate"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=14"
+  },
+  "workspaces": ["clarity", "web"]
+}
