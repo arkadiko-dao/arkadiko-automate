@@ -19,8 +19,8 @@
 (define-data-var contract-enabled bool true)
 (define-data-var withdraw-enabled bool false)
 
-(define-map accounts { owner: principal } { diko: uint, stx: uint })
-(define-map jobs { job-id: uint } { enabled: bool, owner: principal, contract: principal, cost: uint, fee: uint, last-executed: uint })
+(define-map accounts { owner: principal } { diko: uint, stx: uint, jobs: (list 999 uint) })
+(define-map jobs { job-id: uint } { enabled: bool, owner: principal, contract: principal, cost: uint, fee: uint, last-executed: uint, executions: uint })
 
 (define-read-only (get-job-by-id (id uint))
   (default-to
@@ -30,7 +30,8 @@
       contract: tx-sender,
       cost: u0,
       fee: u0,
-      last-executed: u0
+      last-executed: u0,
+      executions: u0
     }
     (map-get? jobs { job-id: id })
   )
@@ -40,7 +41,8 @@
   (default-to
     {
       diko: u0,
-      stx: u0
+      stx: u0,
+      jobs: (list)
     }
     (map-get? accounts { owner: owner })
   )
@@ -79,10 +81,13 @@
     (job-id (+ u1 (var-get last-job-id)))
     (cost (contract-call? used-cost-contract calculate-cost contract))
     (min-fee (max-of (var-get minimum-fee) fee))
+    (account (get-account-by-owner tx-sender))
   )
     (asserts! (var-get contract-enabled) (err ERR-CONTRACT-DISABLED))
     (asserts! (is-eq (var-get cost-contract) (contract-of used-cost-contract)) (err ERR-NOT-AUTHORIZED))
-    (map-set jobs { job-id: job-id } { enabled: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee, last-executed: u0 })
+
+    (map-set accounts { owner: tx-sender } (merge account { jobs: (unwrap-panic (as-max-len? (append (get jobs account) job-id) u999)) }))
+    (map-set jobs { job-id: job-id } { enabled: true, owner: tx-sender, contract: contract, cost: (unwrap-panic cost), fee: min-fee, last-executed: u0, executions: u0 })
     (var-set last-job-id job-id)
     (ok true)
   )
@@ -97,7 +102,7 @@
     (asserts! (is-eq true (unwrap! (should-run job-id job) (ok false))) (ok false))
 
     (try! (contract-call? executor run job))
-    (map-set jobs { job-id: job-id } (merge job-entry { last-executed: block-height }))
+    (map-set jobs { job-id: job-id } (merge job-entry { last-executed: block-height, executions: (+ (get executions job-entry) u1) }))
     (debit-account job-id)
   )
 )
@@ -116,7 +121,7 @@
       (try! (stx-transfer? stx-amount tx-sender (as-contract tx-sender)))
     )
 
-    (map-set accounts { owner: owner } { diko: (+ diko-amount (get diko account)), stx: (+ stx-amount (get stx account)) })
+    (map-set accounts { owner: owner } (merge account { diko: (+ diko-amount (get diko account)), stx: (+ stx-amount (get stx account)) }))
     (ok true)
   )
 )
@@ -140,7 +145,7 @@
       (try! (as-contract (stx-transfer? stx-amount tx-sender owner)))
     )
 
-    (map-set accounts { owner: owner } { diko: (- (get diko account) diko-amount), stx: (- (get stx account) stx-amount) })
+    (map-set accounts { owner: owner } (merge account { diko: (- (get diko account) diko-amount), stx: (- (get stx account) stx-amount) }))
     (ok true)
   )
 )
@@ -178,10 +183,10 @@
 
     (map-set accounts 
       { owner: (get owner job-entry) } 
-      { 
+      (merge account { 
         diko: (- (get diko account) (get cost job-entry)), 
         stx: (- (get stx account) (get fee job-entry)) 
-      }
+      })
     )
 
     (ok true)

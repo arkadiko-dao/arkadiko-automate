@@ -29,6 +29,7 @@ Clarinet.test({name: "job registry: register job",
     call.result.expectTuple()['cost'].expectUintWithDecimals(10);
     call.result.expectTuple()['fee'].expectUintWithDecimals(0.1);
     call.result.expectTuple()['last-executed'].expectUint(0);
+    call.result.expectTuple()['executions'].expectUint(0);
 
     call = await jobRegistry.getContractInfo();
     call.result.expectTuple()['last-job-id'].expectUint(1);
@@ -70,6 +71,61 @@ Clarinet.test({name: "job registry: register and run job",
 
     let call = await jobRegistry.getContractInfo();
     call.result.expectTuple()['last-job-id'].expectUint(2);
+
+    call = await jobRegistry.getAccountByOwner(wallet_1.address);
+    call.result.expectTuple()['diko'].expectUintWithDecimals(990);
+    call.result.expectTuple()['stx'].expectUintWithDecimals(999.9);
+    call.result.expectTuple()['jobs'].expectList()[0].expectUint(1);
+    call.result.expectTuple()['jobs'].expectList()[1].expectUint(2);
+  }
+});
+
+Clarinet.test({name: "job registry: running job decreases owner balance",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    let deployer = accounts.get("deployer")!;
+    let wallet_1 = accounts.get("wallet_1")!;
+
+    let jobRegistry = new JobRegistry(chain, deployer);
+
+    let result = jobRegistry.creditAccount(wallet_1, 1000, 1000);
+    result.expectOk().expectBool(true);
+
+    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.1, "arkadiko-job-cost-calculation-v1-1");
+    result.expectOk().expectBool(true);
+
+    result = jobRegistry.runJob(deployer, 1, "job-diko-liquidation-pool-test", "arkadiko-job-executor-v1-1");
+    result.expectOk().expectBool(true);
+
+    let call = await jobRegistry.getAccountByOwner(wallet_1.address);
+    call.result.expectTuple()['diko'].expectUintWithDecimals(990);
+    call.result.expectTuple()['stx'].expectUintWithDecimals(999.9);
+  }
+});
+
+Clarinet.test({name: "job registry: running job increases executions counter",
+  async fn(chain: Chain, accounts: Map<string, Account>) {
+    let deployer = accounts.get("deployer")!;
+    let wallet_1 = accounts.get("wallet_1")!;
+
+    let jobRegistry = new JobRegistry(chain, deployer);
+
+    let result = jobRegistry.creditAccount(wallet_1, 1000, 1000);
+    result.expectOk().expectBool(true);
+
+    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.1, "arkadiko-job-cost-calculation-v1-1");
+    result.expectOk().expectBool(true);
+
+    result = jobRegistry.runJob(deployer, 1, "job-diko-liquidation-pool-test", "arkadiko-job-executor-v1-1");
+    result.expectOk().expectBool(true);
+
+    let call = await jobRegistry.getJobById(1);
+    call.result.expectTuple()['executions'].expectUint(1);
+
+    result = jobRegistry.runJob(deployer, 1, "job-diko-liquidation-pool-test", "arkadiko-job-executor-v1-1");
+    result.expectOk().expectBool(true);
+
+    call = await jobRegistry.getJobById(1);
+    call.result.expectTuple()['executions'].expectUint(2);
   }
 });
 
