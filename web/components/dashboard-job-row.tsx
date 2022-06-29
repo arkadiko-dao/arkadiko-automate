@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { microToReadable } from '@common/utils';
+import React from 'react';
 import { Disclosure } from '@headlessui/react';
-import { Tooltip } from '@blockstack/ui';
-import { Placeholder } from './ui/placeholder';
-import { NavLink as RouterLink } from 'react-router-dom';
 import { StyledIcon } from './ui/styled-icon';
-import { FarmModalStake } from './farm-modal-stake';
-import { FarmModalUnstake } from './farm-modal-unstake';
 import { stacksNetwork as network } from '@common/utils';
 import { useSTXAddress } from '@common/use-stx-address';
+import { useConnect } from '@stacks/connect-react';
 
 import {
   AnchorMode,
-  callReadOnlyFunction,
-  cvToJSON,
   uintCV,
-  trueCV,
-  standardPrincipalCV,
-  contractPrincipalCV,
 } from '@stacks/transactions'
 
 interface DashboardJobRowProps {}
 
 export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
+  jobId,
   contract,
   cost,
   fee,
@@ -31,8 +22,32 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
   enabled
 }) => {
 
-  const address = useSTXAddress();
+  const stxAddress = useSTXAddress();
+  const { doContractCall } = useConnect();
+
   const contractAddress = process.env.APP_CONTRACT_ADDRESS || '';
+
+  const toggleJobEnabled = async () => {
+    await doContractCall({
+      network,
+      contractAddress,
+      stxAddress,
+      contractName: 'arkadiko-job-registry-v1-1',
+      functionName: 'toggle-job-enabled',
+      functionArgs: [
+        uintCV(jobId),
+      ],
+      postConditionMode: 0,
+      onFinish: data => {
+        setState(prevState => ({
+          ...prevState,
+          currentTxId: data.txId,
+          currentTxStatus: 'pending',
+        }));
+      },
+      anchorMode: AnchorMode.Any,
+    });
+  };
 
   return (
     <>
@@ -42,17 +57,15 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
           <tr className="bg-white dark:bg-zinc-800">
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
-                <p>
-                  {enabled ? (
-                    <p className="inline-flex px-2 text-xs font-semibold leading-5 text-teal-800 bg-teal-100 rounded-full">
-                      Enabled
-                    </p>
-                  ): (
-                    <p className="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full">
-                      Disabled
-                    </p>
-                  )}
-                </p>
+                {enabled ? (
+                  <p className="inline-flex px-2 text-xs font-semibold leading-5 text-indigo-800 bg-indigo-100 rounded-full">
+                    Enabled
+                  </p>
+                ): (
+                  <p className="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full">
+                    Disabled
+                  </p>
+                )}
               </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
@@ -89,7 +102,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
                 <p>
-                  {lastExecuted}{' '}
+                  Block {lastExecuted}{' '} (≈1d, 2h, 20m ago)
                 </p>
               </div>
             </td>
@@ -98,9 +111,9 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
                 <p>
                   <button
                     type="button"
-                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
                     disabled={false}
-                    // onClick={() => setShowUnstakeModal(true)}
+                    onClick={() => toggleJobEnabled()}
                   >
                     Disable
                   </button>

@@ -65,7 +65,7 @@ export function Modal({
               <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
                 <button
                   type="button"
-                  className="text-gray-400 bg-white rounded-md dark:bg-zinc-800 hover:text-gray-500 dark:hover:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                  className="text-gray-400 bg-white rounded-md dark:bg-zinc-800 hover:text-gray-500 dark:hover:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   onClick={closeModal}
                 >
                   <span className="sr-only">Close</span>
@@ -91,7 +91,7 @@ export function Modal({
               <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                 <button
                   type="button"
-                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-teal-600 border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
                   disabled={buttonDisabled}
                   onClick={buttonAction}
                   ref={actionButtonRef}
@@ -100,7 +100,7 @@ export function Modal({
                 </button>
                 <button
                   type="button"
-                  className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                  className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                   onClick={closeModal}
                 >
                   Cancel

@@ -20,7 +20,7 @@ type Props = {
 
 const colorMap: Record<Color, string> = {
   [Color.GRAY]: 'bg-gray-300',
-  [Color.INDIGO]: 'bg-teal-300',
+  [Color.INDIGO]: 'bg-indigo-300',
 };
 
 const widthMap: Record<Width, string> = {

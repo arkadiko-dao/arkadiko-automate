@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import { Dashboard } from './dashboard';
+import { Test } from './test';
 
 export const routerConfig = [
   {
@@ -16,6 +17,7 @@ export function Routes() {
       <Route exact path="/" component={Dashboard} />
 
       <Route exact path="/dashboard" component={Dashboard} />
+      <Route exact path="/test" component={Test} />
 
       <Redirect to="/" />
     </Switch>

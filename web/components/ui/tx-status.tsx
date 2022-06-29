@@ -81,7 +81,7 @@ export const TxStatus = () => {
                     </div>
                     <div className="flex ml-4 shrink-0">
                       <button
-                        className="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                        className="inline-flex text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         onClick={() => {
                           hidePopup();
                         }}

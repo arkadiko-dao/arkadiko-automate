@@ -5,7 +5,7 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import { useConnect } from '@stacks/connect-react';
 import { bnsName } from '@common/use-stx-address';
 import { StyledIcon } from './ui/styled-icon';
-import { Tooltip } from '@blockstack/ui';
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 
 interface HeaderProps {
   signOut: () => void;
@@ -53,14 +53,14 @@ export const Header: React.FC<HeaderProps> = ({ signOut }) => {
               <div className="flex justify-between flex-1">
                 <RouterLink className="flex items-center shrink-0" to="/">
                   <span className="inline-block ml-2 text-lg font-bold align-middle font-headings text-zinc-900 dark:text-zinc-100">
-                    🤖 Arkadiko Automation
+                    🤖 Arkadiko Keepers
                   </span>
                 </RouterLink>
 
                 <RouterLink
                   to="/dashboard"
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 border-b-2 border-transparent dark:text-zinc-100 hover:border-gray-300 hover:text-gray-700"
-                  activeClassName="border-teal-500 text-gray-900"
+                  activeClassName="border-indigo-500 text-gray-900"
                 >
                   Dashboard
                 </RouterLink>
@@ -78,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({ signOut }) => {
 
                     <button
                       type="button"
-                      className="block px-1 text-sm font-medium text-teal-500 hover:text-teal-800 dark:text-teal-300 dark:hover:text-teal-200"
+                      className="block px-1 text-sm font-medium text-indigo-500 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-200"
                       onClick={() => {
                         signOut();
                       }}
@@ -91,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({ signOut }) => {
                     <div>
                       <button
                         type="button"
-                        className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-teal-600 border border-transparent rounded-md shadow-sm hover:bg-teal-700 "
+                        className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 "
                         onClick={() => doOpenAuth()}
                       >
                         <span>Connect Wallet</span>
@@ -123,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({ signOut }) => {
                     as={RouterLink}
                     to="/dashboard"
                     className="block py-2 pl-3 pr-4 text-base font-medium text-gray-500 border-l-4 border-transparent dark:text-zinc-100 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 dark:hover:bg-zinc-700"
-                    activeClassName="border-teal-500 text-gray-900"
+                    activeClassName="border-indigo-500 text-gray-900"
                   >
                     Dashboard
                   </Disclosure.Button>
@@ -140,7 +140,7 @@ export const Header: React.FC<HeaderProps> = ({ signOut }) => {
 
                     <button
                       type="button"
-                      className="block w-full px-4 py-2 text-base font-medium text-left text-teal-500 hover:text-teal-800 hover:bg-teal-100 sm:px-6"
+                      className="block w-full px-4 py-2 text-base font-medium text-left text-indigo-500 hover:text-indigo-800 hover:bg-indigo-100 sm:px-6"
                       onClick={() => {
                         signOut();
                       }}
@@ -155,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({ signOut }) => {
                 <div className="p-3 border-t border-gray-200">
                   <button
                     type="button"
-                    className="relative inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-teal-600 border border-transparent rounded-md shadow-sm hover:bg-teal-700 focus:focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                    className="relative inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     onClick={() => doOpenAuth()}
                   >
                     <span>Connect Wallet</span>
