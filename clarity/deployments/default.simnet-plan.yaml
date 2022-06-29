@@ -42,66 +42,78 @@ plan:
     - id: 0
       transactions:
         - emulated-contract-publish:
-            contract-name: arkadiko-job-cost-calculation-trait-v1
+            contract-name: sip-010-trait-ft-standard
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/arkadiko-job-cost-calculation-trait-v1.clar
+            path: contracts/sip-010-trait-ft-standard.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-liquidation-rewards-trait-v2
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko/arkadiko-liquidation-rewards-trait-v2.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-liquidation-rewards-diko-v1-1
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko/arkadiko-liquidation-rewards-diko-v1-1.clar
         - emulated-contract-publish:
             contract-name: arkadiko-automation-trait-v1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/arkadiko-automation-trait-v1.clar
         - emulated-contract-publish:
-            contract-name: arkadiko-dao-token-trait-v1
+            contract-name: arkadiko-liquidation-rewards-v1-2
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/arkadiko/arkadiko-dao-token-trait-v1.clar
-        - emulated-contract-publish:
-            contract-name: sip-010-trait-ft-standard
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/sip-010-trait-ft-standard.clar
-        - emulated-contract-publish:
-            contract-name: arkadiko-token
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/arkadiko/arkadiko-token.clar
-        - emulated-contract-publish:
-            contract-name: arkadiko-job-executor-trait-v1
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/arkadiko-job-executor-trait-v1.clar
-        - emulated-contract-publish:
-            contract-name: arkadiko-job-executor-test
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/tests/arkadiko-job-executor-test.clar
-        - emulated-contract-publish:
-            contract-name: job-steal-tokens
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/job-steal-tokens.clar
-        - emulated-contract-publish:
-            contract-name: job-harvest-alex
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/job-harvest-alex.clar
-        - emulated-contract-publish:
-            contract-name: arkadiko-job-registry-trait-v1
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/arkadiko-job-registry-trait-v1.clar
-        - emulated-contract-publish:
-            contract-name: arkadiko-job-registry-v1-1
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/arkadiko-job-registry-v1-1.clar
-        - emulated-contract-publish:
-            contract-name: job-diko-liquidation-pool-2
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/job-diko-liquidation-pool-2.clar
+            path: contracts/arkadiko/arkadiko-liquidation-rewards-v1-2.clar
         - emulated-contract-publish:
             contract-name: job-diko-liquidation-pool
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/job-diko-liquidation-pool.clar
         - emulated-contract-publish:
-            contract-name: arkadiko-job-cost-calculation-test
+            contract-name: arkadiko-dao-token-trait-v1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/tests/arkadiko-job-cost-calculation-test.clar
+            path: contracts/arkadiko/arkadiko-dao-token-trait-v1.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-job-cost-calculation-trait-v1
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko-job-cost-calculation-trait-v1.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-job-executor-trait-v1
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko-job-executor-trait-v1.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-job-registry-trait-v1
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko-job-registry-trait-v1.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-token
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko/arkadiko-token.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-job-registry-v1-1
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/arkadiko-job-registry-v1-1.clar
+        - emulated-contract-publish:
+            contract-name: job-steal-tokens
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/job-steal-tokens.clar
         - emulated-contract-publish:
             contract-name: arkadiko-job-executor-v1-1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/arkadiko-job-executor-v1-1.clar
         - emulated-contract-publish:
+            contract-name: arkadiko-job-cost-calculation-test
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/tests/arkadiko-job-cost-calculation-test.clar
+        - emulated-contract-publish:
             contract-name: arkadiko-job-cost-calculation-v1-1
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/arkadiko-job-cost-calculation-v1-1.clar
+        - emulated-contract-publish:
+            contract-name: arkadiko-job-executor-test
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/tests/arkadiko-job-executor-test.clar
+        - emulated-contract-publish:
+            contract-name: job-harvest-alex
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/job-harvest-alex.clar
+        - emulated-contract-publish:
+            contract-name: job-diko-liquidation-pool-2
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/job-diko-liquidation-pool-2.clar

@@ -42,10 +42,25 @@ path = "contracts/tests/arkadiko-job-executor-test.clar"
 path = "contracts/tests/arkadiko-job-cost-calculation-test.clar"
 
 
-## Jobs
+## Arkadiko DAO
 
-[contracts.job-harvest-alex]
-path = "contracts/job-harvest-alex.clar"
+[contracts.arkadiko-dao-token-trait-v1]
+path = "contracts/arkadiko/arkadiko-dao-token-trait-v1.clar"
+
+[contracts.arkadiko-liquidation-rewards-trait-v2]
+path = "contracts/arkadiko/arkadiko-liquidation-rewards-trait-v2.clar"
+
+[contracts.arkadiko-token]
+path = "contracts/arkadiko/arkadiko-token.clar"
+
+[contracts.arkadiko-liquidation-rewards-diko-v1-1]
+path = "contracts/arkadiko/arkadiko-liquidation-rewards-diko-v1-1.clar"
+
+[contracts.arkadiko-liquidation-rewards-v1-2]
+path = "contracts/arkadiko/arkadiko-liquidation-rewards-v1-2.clar"
+
+
+## Jobs
 
 [contracts.job-diko-liquidation-pool]
 path = "contracts/job-diko-liquidation-pool.clar"
@@ -53,16 +68,11 @@ path = "contracts/job-diko-liquidation-pool.clar"
 [contracts.job-diko-liquidation-pool-2]
 path = "contracts/job-diko-liquidation-pool-2.clar"
 
+[contracts.job-harvest-alex]
+path = "contracts/job-harvest-alex.clar"
+
 [contracts.job-steal-tokens]
 path = "contracts/job-steal-tokens.clar"
-
-## Arkadiko DAO
-
-[contracts.arkadiko-dao-token-trait-v1]
-path = "contracts/arkadiko/arkadiko-dao-token-trait-v1.clar"
-
-[contracts.arkadiko-token]
-path = "contracts/arkadiko/arkadiko-token.clar"
 
 
 [repl]
