@@ -1,24 +1,94 @@
 [project]
 name = "arkadiko-automate"
-requirements = ["SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9.staking-helper"]
 authors = ["Arkadiko Team"]
 description = "Arkadiko Automate implements smart contract automation that can be run through a network of off-chain keepers"
 telemetry = false
 boot_contracts = ["pox", "costs-v2"]
 
 
-# [repl.analysis]
-# passes = ["check_checker"]
-# check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
+## Traits
+
+[contracts.sip-010-trait-ft-standard]
+path = "contracts/sip-010-trait-ft-standard.clar"
 
 [contracts.arkadiko-automation-trait-v1]
 path = "contracts/arkadiko-automation-trait-v1.clar"
 
+[contracts.arkadiko-job-cost-calculation-trait-v1]
+path = "contracts/arkadiko-job-cost-calculation-trait-v1.clar"
+
+[contracts.arkadiko-job-executor-trait-v1]
+path = "contracts/arkadiko-job-executor-trait-v1.clar"
+
 [contracts.arkadiko-job-registry-trait-v1]
 path = "contracts/arkadiko-job-registry-trait-v1.clar"
+
+
+## Contracts
+
+[contracts.arkadiko-job-cost-calculation-v1-1]
+path = "contracts/arkadiko-job-cost-calculation-v1-1.clar"
 
 [contracts.arkadiko-job-registry-v1-1]
 path = "contracts/arkadiko-job-registry-v1-1.clar"
 
+[contracts.arkadiko-job-executor-v1-1]
+path = "contracts/arkadiko-job-executor-v1-1.clar"
+
+
+## Tests
+
+[contracts.arkadiko-job-executor-test]
+path = "contracts/tests/arkadiko-job-executor-test.clar"
+
+[contracts.arkadiko-job-cost-calculation-test]
+path = "contracts/tests/arkadiko-job-cost-calculation-test.clar"
+
+[contracts.job-diko-liquidation-pool-test]
+path = "contracts/tests/job-diko-liquidation-pool-test.clar"
+
+[contracts.job-steal-tokens]
+path = "contracts/tests/job-steal-tokens.clar"
+
+
+## Arkadiko DAO
+
+[contracts.arkadiko-dao-token-trait-v1]
+path = "contracts/arkadiko/arkadiko-dao-token-trait-v1.clar"
+
+[contracts.arkadiko-liquidation-rewards-trait-v2]
+path = "contracts/arkadiko/arkadiko-liquidation-rewards-trait-v2.clar"
+
+[contracts.arkadiko-token]
+path = "contracts/arkadiko/arkadiko-token.clar"
+
+[contracts.arkadiko-liquidation-rewards-diko-v1-1]
+path = "contracts/arkadiko/arkadiko-liquidation-rewards-diko-v1-1.clar"
+
+[contracts.arkadiko-liquidation-rewards-v1-2]
+path = "contracts/arkadiko/arkadiko-liquidation-rewards-v1-2.clar"
+
+
+## Jobs
+
+[contracts.job-diko-liquidation-pool]
+path = "contracts/job-diko-liquidation-pool.clar"
+
 [contracts.job-harvest-alex]
 path = "contracts/job-harvest-alex.clar"
+
+
+
+
+[repl]
+costs_version = 2
+parser_version = 2
+
+[repl.analysis]
+passes = []
+
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false
