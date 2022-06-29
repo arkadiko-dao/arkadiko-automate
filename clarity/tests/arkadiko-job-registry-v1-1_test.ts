@@ -62,10 +62,10 @@ Clarinet.test({name: "job registry: register and run job",
     result = jobRegistry.runJob(deployer, 1, "job-diko-liquidation-pool", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(false); // execution not required
     
-    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-2", 0.1, "arkadiko-job-cost-calculation-v1-1");
+    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.1, "arkadiko-job-cost-calculation-v1-1");
     result.expectOk().expectBool(true);
 
-    result = jobRegistry.runJob(deployer, 2, "job-diko-liquidation-pool-2", "arkadiko-job-executor-v1-1");
+    result = jobRegistry.runJob(deployer, 2, "job-diko-liquidation-pool-test", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(true);
 
     let call = await jobRegistry.getContractInfo();
@@ -91,7 +91,7 @@ Clarinet.test({name: "job registry: do not run disabled job",
 
     let jobRegistry = new JobRegistry(chain, deployer);
 
-    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-2", 0.1, "arkadiko-job-cost-calculation-v1-1");
+    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.1, "arkadiko-job-cost-calculation-v1-1");
     result.expectOk().expectBool(true);
 
     result = jobRegistry.creditAccount(wallet_1, 1000, 1000);
@@ -100,7 +100,7 @@ Clarinet.test({name: "job registry: do not run disabled job",
     result = jobRegistry.toggleJobEnabled(wallet_1, 1);
     result.expectOk().expectBool(true);
 
-    result = jobRegistry.runJob(deployer, 1, "job-diko-liquidation-pool-2", "arkadiko-job-executor-v1-1");
+    result = jobRegistry.runJob(deployer, 1, "job-diko-liquidation-pool-test", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(false);
   }
 });
@@ -211,7 +211,7 @@ Clarinet.test({name: "job registry: only job and contract owner can toggle job e
 
     let jobRegistry = new JobRegistry(chain, deployer);
 
-    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-2", 0.1, "arkadiko-job-cost-calculation-v1-1");
+    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.1, "arkadiko-job-cost-calculation-v1-1");
     result.expectOk().expectBool(true);
 
     result = jobRegistry.toggleJobEnabled(deployer, 1);
@@ -271,10 +271,10 @@ Clarinet.test({name: "job registry: update cost contract",
     let call = await jobRegistry.getContractInfo();
     call.result.expectTuple()['cost-contract'].expectPrincipal(Utils.qualifiedName("arkadiko-job-cost-calculation-test"));
 
-    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-2", 0.01, "arkadiko-job-cost-calculation-v1-1");
+    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.01, "arkadiko-job-cost-calculation-v1-1");
     result.expectErr().expectUint(403);
 
-    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-2", 0.01, "arkadiko-job-cost-calculation-test");
+    result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.01, "arkadiko-job-cost-calculation-test");
     result.expectOk().expectBool(true);
 
     call = await jobRegistry.getJobById(1);
@@ -289,16 +289,16 @@ Clarinet.test({name: "job registry: can not run job if account balance too low",
 
     let jobRegistry = new JobRegistry(chain, deployer);
 
-    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-2", 0.01, "arkadiko-job-cost-calculation-v1-1");
+    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.01, "arkadiko-job-cost-calculation-v1-1");
     result.expectOk().expectBool(true);
 
-    result = jobRegistry.runJob(wallet_1, 1, "job-diko-liquidation-pool-2", "arkadiko-job-executor-v1-1");
+    result = jobRegistry.runJob(wallet_1, 1, "job-diko-liquidation-pool-test", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(false);
 
     result = jobRegistry.creditAccount(wallet_1, 1000, 1000);
     result.expectOk().expectBool(true);
 
-    result = jobRegistry.runJob(wallet_1, 1, "job-diko-liquidation-pool-2", "arkadiko-job-executor-v1-1");
+    result = jobRegistry.runJob(wallet_1, 1, "job-diko-liquidation-pool-test", "arkadiko-job-executor-v1-1");
     result.expectOk().expectBool(true);
   }
 });
@@ -310,7 +310,7 @@ Clarinet.test({name: "job registry: run job with wrong contract",
 
     let jobRegistry = new JobRegistry(chain, deployer);
 
-    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-2", 0.01, "arkadiko-job-cost-calculation-v1-1");
+    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.01, "arkadiko-job-cost-calculation-v1-1");
     result.expectOk().expectBool(true);
 
     result = jobRegistry.creditAccount(wallet_1, 1000, 1000);
@@ -331,13 +331,13 @@ Clarinet.test({name: "job registry: run job with wrong executor",
 
     let jobRegistry = new JobRegistry(chain, deployer);
 
-    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-2", 0.01, "arkadiko-job-cost-calculation-v1-1");
+    let result = jobRegistry.registerJob(wallet_1, "job-diko-liquidation-pool-test", 0.01, "arkadiko-job-cost-calculation-v1-1");
     result.expectOk().expectBool(true);
 
     result = jobRegistry.creditAccount(wallet_1, 1000, 1000);
     result.expectOk().expectBool(true);
 
-    result = jobRegistry.runJob(wallet_1, 1, "job-diko-liquidation-pool-2", "arkadiko-job-executor-test");
+    result = jobRegistry.runJob(wallet_1, 1, "job-diko-liquidation-pool-test", "arkadiko-job-executor-test");
     result.expectErr().expectUint(403);
   }
 });
