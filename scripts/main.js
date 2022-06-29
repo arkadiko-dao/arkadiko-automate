@@ -31,7 +31,7 @@ const runJob = async (jobId) => {
 
   const transaction = await tx.makeContractCall(txOptions);
   const result = tx.broadcastTransaction(transaction, network);
-  await utils.processing(result, transaction.txid(), 0);
+  await utils.waitForTransactionCompletion(transaction.txid());
 };
 
 const exec = async () => {
