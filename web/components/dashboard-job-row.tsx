@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
+import { AppContext } from '@common/context';
 import { Disclosure } from '@headlessui/react';
 import { StyledIcon } from './ui/styled-icon';
 import { stacksNetwork as network } from '@common/utils';
@@ -10,7 +11,16 @@ import {
   uintCV,
 } from '@stacks/transactions'
 
-interface DashboardJobRowProps {}
+interface DashboardJobRowProps {
+  key: string;
+  jobId: number;
+  contract: string;
+  cost: number;
+  fee: number;
+  executions: number;
+  lastExecuted: number;
+  enabled: boolean;
+}
 
 export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
   jobId,
@@ -27,6 +37,8 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
 
   const contractAddress = process.env.APP_CONTRACT_ADDRESS || '';
 
+  const [state, setState] = useContext(AppContext);
+
   const toggleJobEnabled = async () => {
     await doContractCall({
       network,
@@ -37,7 +49,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
       functionArgs: [
         uintCV(jobId),
       ],
-      postConditionMode: 0,
+      postConditionMode: 1,
       onFinish: data => {
         setState(prevState => ({
           ...prevState,
@@ -71,7 +83,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
                 <p className="inline-flex items-center">
-                  {contract}
+                  {contract.split(".")[1]}
                   <StyledIcon as="ExternalLinkIcon" size={4} className="block ml-2" />
                 </p>
               </div>
@@ -102,13 +114,22 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
                 <p>
-                  Block {lastExecuted}{' '} (≈1d, 2h, 20m ago)
+                  { lastExecuted == 0 ? (
+                    <>
+                      Not executed yet
+                    </>
+                  ):(
+                    <>
+                      Block {lastExecuted}{' '} (≈1d, 2h, 20m ago)
+                    </>
+                  )}
                 </p>
               </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
                 <p>
+                {enabled ? (
                   <button
                     type="button"
                     className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
@@ -117,6 +138,16 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
                   >
                     Disable
                   </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    disabled={false}
+                    onClick={() => toggleJobEnabled()}
+                  >
+                    Enable
+                  </button>
+                )}
                 </p>
               </div>
             </td>

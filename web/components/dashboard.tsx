@@ -52,6 +52,7 @@ export const Dashboard = () => {
   const [createContract, setCreateContract] = useState("");
   const [createFee, setCreateFee] = useState(0.001);
 
+  const [jobItems, setJobItems] = useState([]);
   const [contractInfo, setContractInfo] = useState({});
 
 
@@ -162,11 +163,11 @@ export const Dashboard = () => {
       contractName: 'arkadiko-job-registry-v1-1',
       functionName: 'register-job',
       functionArgs: [
-        contractPrincipalCV("ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM", "job-diko-liquidation-pool"),
-        uintCV(10000),
-        contractPrincipalCV("ST3EQ88S02BXXD0T5ZVT3KW947CRMQ1C6DMQY8H19", "arkadiko-job-cost-calculation-v1-1")
+        contractPrincipalCV(createContract.split(".")[0], createContract.split(".")[1]),
+        uintCV(createFee * 1000000),
+        contractPrincipalCV(contractAddress, "arkadiko-job-cost-calculation-v1-1")
       ],
-      postConditionMode: 0x0,
+      postConditionMode: 1,
       onFinish: data => {
         setState(prevState => ({
           ...prevState,
@@ -233,6 +234,8 @@ export const Dashboard = () => {
 
     const getUserJobsInfo = async (jobIds: number[]) => {
 
+      var rows = [];
+
       for (const jobId of jobIds) {
         console.log("Fetch job with ID:", jobId);
 
@@ -246,11 +249,24 @@ export const Dashboard = () => {
           senderAddress: stxAddress || '',
           network: network,
         });
-        const result = cvToJSON(call);
+        const result = cvToJSON(call).value;
         console.log("result:", result);
+
+        rows.push(
+          <DashboardJobRow
+            key={jobId}
+            jobId={jobId}
+            contract={result.contract.value}
+            cost={result.cost.value}
+            fee={result.fee.value}
+            executions={result.executions.value}
+            lastExecuted={result["last-executed"].value}
+            enabled={result.enabled.value}
+          />
+        );
       }
 
-      return "ok";
+      return rows;
     };
 
     const fetchInfo = async () => {
@@ -279,8 +295,18 @@ export const Dashboard = () => {
 
       setContractInfo(contractInfo);
 
-      const jobList = await getUserJobsInfo([1]);
+
+      var jobIds = [];
+      for (const jobInfo of  userAccount.jobs.value) {
+        jobIds.push(jobInfo.value);
+      }
+
+      console.log("jobIds: ", jobIds);
+
+      const jobList = await getUserJobsInfo(jobIds);
       console.log("jobList: ", jobList);
+      
+      setJobItems(jobList);
 
       setIsLoading(false);
     };
@@ -568,25 +594,7 @@ export const Dashboard = () => {
                         </tr>
                       </thead>
 
-                      <DashboardJobRow
-                          jobId={1}
-                          contract={'contract-name'}
-                          cost={10000000}
-                          fee={1000}
-                          executions={10}
-                          lastExecuted={64392}
-                          enabled={true}
-                      />
-
-                      <DashboardJobRow
-                          jobId={2}
-                          contract={'contract-name'}
-                          cost={10000000}
-                          fee={1000}
-                          executions={10}
-                          lastExecuted={64392}
-                          enabled={true}
-                      />
+                      {jobItems}
 
                     </table>
                   </div>
