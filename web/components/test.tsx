@@ -59,7 +59,7 @@ export const Test: React.FC = () => {
       functionArgs: [
         uintCV(5000000000),
         standardPrincipalCV(arkadikoAddress),
-        standardPrincipalCV(arkadikoAddress),
+        standardPrincipalCV(address),
         noneCV()
       ],
       senderKey: privateKeyToString(senderKey),
