@@ -37,7 +37,7 @@ export const Dashboard = () => {
   const arkadikoAddress = process.env.ARKADIKO_CONTRACT_ADDRESS || '';
 
   const [state, setState] = useContext(AppContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [balanceWalletDiko, setBalanceWalletDiko] = useState(0);
   const [balanceWalletStx, setBalanceWalletStx] = useState(0);
@@ -51,6 +51,8 @@ export const Dashboard = () => {
 
   const [createContract, setCreateContract] = useState("");
   const [createFee, setCreateFee] = useState(0.001);
+
+  const [contractInfo, setContractInfo] = useState({});
 
 
   const onInputDepositDikoChange = (event: any) => {
@@ -124,7 +126,35 @@ export const Dashboard = () => {
     });
   };
 
+  const debitAccount = async () => {
+    await doContractCall({
+      network,
+      contractAddress,
+      stxAddress,
+      contractName: 'arkadiko-job-registry-v1-1',
+      functionName: 'withdraw-account',
+      functionArgs: [
+        uintCV(withdrawAmountDiko * 1000000),
+        uintCV(withdrawAmountStx * 1000000),
+      ],
+      postConditionMode: 0x01,
+      onFinish: data => {
+        setState(prevState => ({
+          ...prevState,
+          currentTxId: data.txId,
+          currentTxStatus: 'pending',
+        }));
+      },
+      anchorMode: AnchorMode.Any,
+    });
+  };
+
   const registerJob = async () => {
+
+    console.log("createContract:", createContract);
+    console.log("createFee:", createFee);
+    console.log("contractAddress:", contractAddress);
+
     await doContractCall({
       network,
       contractAddress,
@@ -132,9 +162,9 @@ export const Dashboard = () => {
       contractName: 'arkadiko-job-registry-v1-1',
       functionName: 'register-job',
       functionArgs: [
-        contractPrincipalCV(createContract.split(".")[0], createContract.split(".")[1]),
-        uintCV(Number((parseFloat(createFee) * 1000000).toFixed(0))),
-        contractPrincipalCV(contractAddress, "arkadiko-job-cost-calculation-v1-1")
+        contractPrincipalCV("ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM", "job-diko-liquidation-pool"),
+        uintCV(10000),
+        contractPrincipalCV("ST3EQ88S02BXXD0T5ZVT3KW947CRMQ1C6DMQY8H19", "arkadiko-job-cost-calculation-v1-1")
       ],
       postConditionMode: 0x0,
       onFinish: data => {
@@ -184,7 +214,7 @@ export const Dashboard = () => {
         senderAddress: stxAddress || '',
         network: network,
       });
-      const result = cvToJSON(call);
+      const result = cvToJSON(call).value;
       return result;
     };
 
@@ -197,7 +227,7 @@ export const Dashboard = () => {
         senderAddress: stxAddress || '',
         network: network,
       });
-      const result = cvToJSON(call);
+      const result = cvToJSON(call).value;
       return result;
     };
 
@@ -240,11 +270,14 @@ export const Dashboard = () => {
       console.log("userWalletStx:", userWalletStx);
       console.log("userWalletDiko:", userWalletDiko);
       console.log("userAccount:", userAccount);
+      console.log("job list:", userAccount.jobs.value);
 
       setBalanceWalletStx(userWalletStx);
       setBalanceWalletDiko(userWalletDiko);
-      setBalanceAccountDiko(0);
-      setBalanceAccountStx(0);
+      setBalanceAccountDiko(userAccount.diko.value);
+      setBalanceAccountStx(userAccount.stx.value);
+
+      setContractInfo(contractInfo);
 
       const jobList = await getUserJobsInfo([1]);
       console.log("jobList: ", jobList);
@@ -457,7 +490,7 @@ export const Dashboard = () => {
                                   type="button"
                                   className="inline-flex justify-center px-4 py-2 mb-4 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
                                   // disabled={buttonUnstakeDisabled}
-                                  // onClick={unstake}
+                                  onClick={debitAccount}
                                 >
                                   Debit account
                                 </button>
@@ -678,10 +711,10 @@ export const Dashboard = () => {
                       <dt className="mt-1 text-sm font-semibold text-gray-900 sm:mt-0 sm:text-right">
                         {isLoading ? (
                           <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                        ) : contractInfo["contract-enabled"].value ? (
+                          <>yes</>
                         ) : (
-                          <>
-                            yes
-                          </>
+                          <>no</>
                         )}
                       </dt>
                     </div>
@@ -705,10 +738,10 @@ export const Dashboard = () => {
                       <dt className="mt-1 text-sm font-semibold text-gray-900 sm:mt-0 sm:text-right">
                         {isLoading ? (
                           <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                        ) : contractInfo["withdraw-enabled"].value ? (
+                          <>yes</>
                         ) : (
-                          <>
-                            yes
-                          </>
+                          <>no</>
                         )}
                       </dt>
                     </div>
@@ -738,7 +771,11 @@ export const Dashboard = () => {
                           <Placeholder className="py-2" width={Placeholder.width.FULL} />
                         ) : (
                           <>
-                            0.001 STX
+                            {microToReadable(contractInfo["minimum-fee"].value).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 6,
+                            })}{' '}
+                            STX
                           </>
                         )}
                       </dt>
@@ -765,7 +802,7 @@ export const Dashboard = () => {
                           <Placeholder className="py-2" width={Placeholder.width.FULL} />
                         ) : (
                           <>
-                            14
+                            {contractInfo["last-job-id"].value}
                           </>
                         )}
                       </dt>
