@@ -9,9 +9,8 @@ const network = utils.resolveNetwork();
 const BN = require('bn.js');
 const stacking = require('@stacks/stacking');
 const c32 = require('c32check');
-const enabledJobIds = [1, 2];
 
-const registerJob = async (jobId) => {
+const registerJob = async () => {
   const txOptions = {
     contractAddress: CONTRACT_ADDRESS,
     contractName: "arkadiko-job-registry-v1-1",
