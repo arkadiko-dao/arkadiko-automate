@@ -3,7 +3,7 @@ import { AppContext } from '@common/context';
 import { Tooltip } from '@blockstack/ui';
 import { InformationCircleIcon, MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/solid';
 import { Placeholder } from "./ui/placeholder";
-import { microToReadable, getRPCClient } from '@common/utils';
+import { microToReadable, getRPCClient, getBlockHeight } from '@common/utils';
 import { stacksNetwork as network } from '@common/utils';
 import { Tab } from '@headlessui/react';
 import { InputAmount } from './ui/input-amount';
@@ -151,11 +151,6 @@ export const Dashboard = () => {
   };
 
   const registerJob = async () => {
-
-    console.log("createContract:", createContract);
-    console.log("createFee:", createFee);
-    console.log("contractAddress:", contractAddress);
-
     await doContractCall({
       network,
       contractAddress,
@@ -232,13 +227,11 @@ export const Dashboard = () => {
       return result;
     };
 
-    const getUserJobsInfo = async (jobIds: number[]) => {
+    const getUserJobsInfo = async (jobIds: number[], blockHeight: number) => {
 
       var rows = [];
 
       for (const jobId of jobIds) {
-        console.log("Fetch job with ID:", jobId);
-
         const call = await callReadOnlyFunction({
           contractAddress,
           contractName: 'arkadiko-job-registry-v1-1',
@@ -250,7 +243,6 @@ export const Dashboard = () => {
           network: network,
         });
         const result = cvToJSON(call).value;
-        console.log("result:", result);
 
         rows.push(
           <DashboardJobRow
@@ -262,6 +254,7 @@ export const Dashboard = () => {
             executions={result.executions.value}
             lastExecuted={result["last-executed"].value}
             enabled={result.enabled.value}
+            currentBlock={blockHeight}
           />
         );
       }
@@ -275,18 +268,15 @@ export const Dashboard = () => {
         userWalletStx,
         userWalletDiko,
         userAccount,
-        contractInfo
+        contractInfo,
+        blockHeight
       ] = await Promise.all([
         getUserWalletStx(),
         getUserWalletDiko(),
         getAccount(),
-        getContractInfo()
+        getContractInfo(),
+        getBlockHeight()
       ]);
-
-      console.log("userWalletStx:", userWalletStx);
-      console.log("userWalletDiko:", userWalletDiko);
-      console.log("userAccount:", userAccount);
-      console.log("job list:", userAccount.jobs.value);
 
       setBalanceWalletStx(userWalletStx);
       setBalanceWalletDiko(userWalletDiko);
@@ -295,17 +285,12 @@ export const Dashboard = () => {
 
       setContractInfo(contractInfo);
 
-
       var jobIds = [];
       for (const jobInfo of  userAccount.jobs.value) {
         jobIds.push(jobInfo.value);
       }
 
-      console.log("jobIds: ", jobIds);
-
-      const jobList = await getUserJobsInfo(jobIds);
-      console.log("jobList: ", jobList);
-      
+      const jobList = await getUserJobsInfo(jobIds, blockHeight);      
       setJobItems(jobList);
 
       setIsLoading(false);

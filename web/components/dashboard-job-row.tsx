@@ -5,6 +5,7 @@ import { StyledIcon } from './ui/styled-icon';
 import { stacksNetwork as network } from '@common/utils';
 import { useSTXAddress } from '@common/use-stx-address';
 import { useConnect } from '@stacks/connect-react';
+import { blocksToTime } from '@common/utils';
 
 import {
   AnchorMode,
@@ -20,6 +21,7 @@ interface DashboardJobRowProps {
   executions: number;
   lastExecuted: number;
   enabled: boolean;
+  currentBlock: number;
 }
 
 export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
@@ -29,7 +31,8 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
   fee,
   executions,
   lastExecuted,
-  enabled
+  enabled,
+  currentBlock
 }) => {
 
   const stxAddress = useSTXAddress();
@@ -70,7 +73,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
                 {enabled ? (
-                  <p className="inline-flex px-2 text-xs font-semibold leading-5 text-indigo-800 bg-indigo-100 rounded-full">
+                  <p className="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
                     Enabled
                   </p>
                 ): (
@@ -82,10 +85,10 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
             </td>
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
-                <p className="inline-flex items-center">
+                <a href={"https://explorer.stacks.co/txid/" + contract + "?chain=mainnet"} className="inline-flex items-center">
                   {contract.split(".")[1]}
                   <StyledIcon as="ExternalLinkIcon" size={4} className="block ml-2" />
-                </p>
+                </a>
               </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
@@ -114,13 +117,14 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
                 <p>
-                  { lastExecuted == 0 ? (
+                  {lastExecuted == 0 ? (
                     <>
                       Not executed yet
                     </>
                   ):(
                     <>
-                      Block {lastExecuted}{' '} (≈1d, 2h, 20m ago)
+                      Block {lastExecuted}{' '} 
+                      (≈{blocksToTime(currentBlock - lastExecuted)} ago)
                     </>
                   )}
                 </p>
@@ -132,7 +136,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
                 {enabled ? (
                   <button
                     type="button"
-                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
                     disabled={false}
                     onClick={() => toggleJobEnabled()}
                   >
@@ -141,7 +145,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
                 ) : (
                   <button
                     type="button"
-                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
                     disabled={false}
                     onClick={() => toggleJobEnabled()}
                   >
