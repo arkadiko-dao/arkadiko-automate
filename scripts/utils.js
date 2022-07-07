@@ -119,7 +119,6 @@ async function deployContractHelper(contractName, contractFile, nonce, senderKey
 
   const transaction = await tx.makeContractDeploy(txOptions);
   const result = await tx.broadcastTransaction(transaction, resolveNetwork());
-  console.log("TX ID: ", result);
   return transaction.txid();
 }
 

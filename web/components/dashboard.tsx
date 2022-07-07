@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { AppContext } from '@common/context';
 import { Tooltip } from '@blockstack/ui';
-import { InformationCircleIcon, MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/solid';
+import { InformationCircleIcon, MinusCircleIcon, PlusCircleIcon, CollectionIcon } from '@heroicons/react/solid';
 import { Placeholder } from "./ui/placeholder";
 import { microToReadable, getRPCClient, getBlockHeight } from '@common/utils';
 import { stacksNetwork as network } from '@common/utils';
@@ -14,6 +14,7 @@ import { Container } from './home';
 import { DashboardJobRow } from './dashboard-job-row';
 import { useSTXAddress } from '@common/use-stx-address';
 import { useConnect } from '@stacks/connect-react';
+import { EmptyState } from './ui/empty-state';
 import {
   AnchorMode,
   callReadOnlyFunction,
@@ -21,11 +22,6 @@ import {
   uintCV,
   contractPrincipalCV,
   standardPrincipalCV,
-  makeStandardFungiblePostCondition,
-  makeContractFungiblePostCondition,
-  FungibleConditionCode,
-  createAssetInfo,
-  cvToValue
 } from '@stacks/transactions';
 
 export const Dashboard = () => {
@@ -54,7 +50,6 @@ export const Dashboard = () => {
 
   const [jobItems, setJobItems] = useState([]);
   const [contractInfo, setContractInfo] = useState({});
-
 
   const onInputDepositDikoChange = (event: any) => {
     const value = event.target.value;
@@ -101,7 +96,6 @@ export const Dashboard = () => {
   const withdrawMaxAmountStx = () => {
     setWithdrawAmountStx((balanceAccountStx / 1000000).toString());
   };
-
 
   const creditAccount = async () => {
     await doContractCall({
@@ -332,21 +326,33 @@ export const Dashboard = () => {
                     
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm font-medium text-indigo-500 dark:text-indigo-700">
-                        {microToReadable(balanceWalletDiko).toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 6,
-                        })}{' '}
-                        DIKO
+                      {isLoading ? (
+                        <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                      ) : (
+                        <>
+                          {microToReadable(balanceWalletDiko).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 6,
+                          })}{' '}
+                          DIKO
+                        </>
+                      )}
                       </dt>
                     </div>
 
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm font-medium text-indigo-500 dark:text-indigo-700">
-                        {microToReadable(balanceWalletStx).toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 6,
-                        })}{' '}
-                        STX
+                        {isLoading ? (
+                          <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                        ) : (
+                          <>
+                            {microToReadable(balanceWalletStx).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 6,
+                            })}{' '}
+                            STX
+                          </>
+                        )}
                       </dt>
                     </div>
 
@@ -357,45 +363,57 @@ export const Dashboard = () => {
                     
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm font-medium text-indigo-500 dark:text-indigo-700">
-                        {microToReadable(balanceAccountDiko).toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 6,
-                        })}{' '}
-                        DIKO
-                        <div className="ml-2">
-                          <Tooltip
-                            className="z-10"
-                            shouldWrapChildren={true}
-                            label={`DIKO is used as a reward for keepers who execute a job.`}
-                          >
-                            <InformationCircleIcon
-                              className="block w-4 h-4 text-indigo-400 dark:text-indigo-500"
-                              aria-hidden="true"
-                            />
-                          </Tooltip>
-                        </div>
+                        {isLoading ? (
+                          <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                        ) : (
+                          <>
+                            {microToReadable(balanceAccountDiko).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 6,
+                            })}{' '}
+                            DIKO
+                            <div className="ml-2">
+                              <Tooltip
+                                className="z-10"
+                                shouldWrapChildren={true}
+                                label={`DIKO is used as a reward for keepers who execute a job.`}
+                              >
+                                <InformationCircleIcon
+                                  className="block w-4 h-4 text-indigo-400 dark:text-indigo-500"
+                                  aria-hidden="true"
+                                />
+                              </Tooltip>
+                            </div>
+                          </>
+                        )}
                       </dt>
                     </div>
 
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm font-medium text-indigo-500 dark:text-indigo-700">
-                        {microToReadable(balanceAccountStx).toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 6,
-                        })}{' '}
-                        STX
-                        <div className="ml-2">
-                          <Tooltip
-                            className="z-10"
-                            shouldWrapChildren={true}
-                            label={`STX is used to cover the fees when executing a job.`}
-                          >
-                            <InformationCircleIcon
-                              className="block w-4 h-4 text-indigo-400 dark:text-indigo-500"
-                              aria-hidden="true"
-                            />
-                          </Tooltip>
-                        </div>
+                        {isLoading ? (
+                          <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                        ) : (
+                          <>
+                            {microToReadable(balanceAccountStx).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 6,
+                            })}{' '}
+                            STX
+                            <div className="ml-2">
+                              <Tooltip
+                                className="z-10"
+                                shouldWrapChildren={true}
+                                label={`STX is used to cover the fees when executing a job.`}
+                              >
+                                <InformationCircleIcon
+                                  className="block w-4 h-4 text-indigo-400 dark:text-indigo-500"
+                                  aria-hidden="true"
+                                />
+                              </Tooltip>
+                            </div>
+                          </>
+                        )}
                       </dt>
                     </div>
 
@@ -437,7 +455,10 @@ export const Dashboard = () => {
                         <Tab.Panels className="mt-4">
                           <Tab.Panel>
                             {isLoading ? (
-                              <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                              <>
+                                <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                                <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                              </>
                             ) : (
                               <>
                                 <InputAmount
@@ -474,7 +495,10 @@ export const Dashboard = () => {
 
                           <Tab.Panel>
                             {isLoading ? (
-                              <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                              <>
+                                <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                                <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                              </>
                             ) : (
                               <>
                                 <InputAmount
@@ -530,6 +554,18 @@ export const Dashboard = () => {
             <div className="flex flex-col mt-4">
               <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                {isLoading ? (
+                  <>
+                    <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                    <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                  </>
+                ) : jobItems.length == 0 ? (
+                  <EmptyState
+                    Icon={CollectionIcon}
+                    title="No registered jobs yet"
+                    description="Start by registering your first job below."
+                  />
+                ) : (
                   <div className="overflow-hidden border border-gray-200 rounded-lg dark:border-zinc-700">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-600">
                       <thead className="bg-gray-50 dark:bg-zinc-800 dark:bg-opacity-80">
@@ -583,6 +619,7 @@ export const Dashboard = () => {
 
                     </table>
                   </div>
+                )}
                 </div>
               </div>
             </div>
