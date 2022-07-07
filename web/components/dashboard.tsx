@@ -729,7 +729,7 @@ export const Dashboard = () => {
                           <Tooltip
                             className="z-10"
                             shouldWrapChildren={true}
-                            label={`Amount of USDA that is currently in the pool, ready to be used for liquidations.`}
+                            label={`If enabled, jobs can be registered and executed.`}
                           >
                             <InformationCircleIcon
                               className="block w-4 h-4 text-gray-400 dark:text-gray-500"
@@ -756,7 +756,7 @@ export const Dashboard = () => {
                           <Tooltip
                             className="z-10"
                             shouldWrapChildren={true}
-                            label={`Deposited USDA will be locked.`}
+                            label={`If enabled, you are able to debit DIKO and STX which you deposited.`}
                           >
                             <InformationCircleIcon
                               className="block w-4 h-4 text-gray-400 dark:text-gray-500"
@@ -787,7 +787,7 @@ export const Dashboard = () => {
                           <Tooltip
                             className="z-10"
                             shouldWrapChildren={true}
-                            label={`Amount of USDA that is currently in the pool, ready to be used for liquidations.`}
+                            label={`The minimum STX fee to run a job.`}
                           >
                             <InformationCircleIcon
                               className="block w-4 h-4 text-gray-400 dark:text-gray-500"
@@ -813,12 +813,45 @@ export const Dashboard = () => {
 
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
+                        Job cost
+                        <div className="ml-2">
+                          <Tooltip
+                            className="z-10"
+                            shouldWrapChildren={true}
+                            label={`Cost in DIKO for executing the job.`}
+                          >
+                            <InformationCircleIcon
+                              className="block w-4 h-4 text-gray-400 dark:text-gray-500"
+                              aria-hidden="true"
+                            />
+                          </Tooltip>
+                        </div>
+                      </dt>
+                      <dt className="mt-1 text-sm font-semibold text-gray-900 sm:mt-0 sm:text-right">
+                        {isLoading ? (
+                          <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                        ) : (
+                          <>
+                            10 DIKO
+                          </>
+                        )}
+                      </dt>
+                    </div>
+
+                  </dl>
+                </div>
+
+                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-200">
+                  <dl className="mt-2 space-y-1">
+                    
+                    <div className="sm:grid sm:grid-cols-2 sm:gap-4">
+                      <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
                         Total jobs
                         <div className="ml-2">
                           <Tooltip
                             className="z-10"
                             shouldWrapChildren={true}
-                            label={`Deposited USDA will be locked.`}
+                            label={`Total amount of jobs registered in the system.`}
                           >
                             <InformationCircleIcon
                               className="block w-4 h-4 text-gray-400 dark:text-gray-500"
@@ -837,64 +870,7 @@ export const Dashboard = () => {
                         )}
                       </dt>
                     </div>
-                  </dl>
-                </div>
 
-                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-200">
-                  <dl className="mt-2 space-y-1">
-                    <div className="sm:grid sm:grid-cols-2 sm:gap-4">
-                      <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
-                        Cost contract
-                        <div className="ml-2">
-                          <Tooltip
-                            className="z-10"
-                            shouldWrapChildren={true}
-                            label={`Amount of USDA that is currently in the pool, ready to be used for liquidations.`}
-                          >
-                            <InformationCircleIcon
-                              className="block w-4 h-4 text-gray-400 dark:text-gray-500"
-                              aria-hidden="true"
-                            />
-                          </Tooltip>
-                        </div>
-                      </dt>
-                      <dt className="mt-1 text-sm font-semibold text-gray-900 sm:mt-0 sm:text-right">
-                        {isLoading ? (
-                          <Placeholder className="py-2" width={Placeholder.width.FULL} />
-                        ) : (
-                          <>
-                            .arkadiko-job-cost-calculation-v1-1
-                          </>
-                        )}
-                      </dt>
-                    </div>
-
-                    <div className="sm:grid sm:grid-cols-2 sm:gap-4">
-                      <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
-                        Executor contract
-                        <div className="ml-2">
-                          <Tooltip
-                            className="z-10"
-                            shouldWrapChildren={true}
-                            label={`Deposited USDA will be locked.`}
-                          >
-                            <InformationCircleIcon
-                              className="block w-4 h-4 text-gray-400 dark:text-gray-500"
-                              aria-hidden="true"
-                            />
-                          </Tooltip>
-                        </div>
-                      </dt>
-                      <dt className="mt-1 text-sm font-semibold text-gray-900 sm:mt-0 sm:text-right">
-                        {isLoading ? (
-                          <Placeholder className="py-2" width={Placeholder.width.FULL} />
-                        ) : (
-                          <>
-                            .arkadiko-job-executor-v1-1
-                          </>
-                        )}
-                      </dt>
-                    </div>
                   </dl>
                 </div>
                 
