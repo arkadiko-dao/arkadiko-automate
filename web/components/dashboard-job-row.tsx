@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { AppContext } from '@common/context';
 import { Disclosure } from '@headlessui/react';
 import { StyledIcon } from './ui/styled-icon';
