@@ -114,7 +114,8 @@
     (asserts! (var-get contract-enabled) (err ERR-CONTRACT-DISABLED))
     (if (is-eq diko-amount u0)
       false
-      (try! (contract-call? .arkadiko-token transfer diko-amount tx-sender (as-contract tx-sender) none))
+      ;; TODO: update address for mainnet
+      (try! (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.arkadiko-token transfer diko-amount tx-sender (as-contract tx-sender) none))
     )
     (if (is-eq stx-amount u0)
       false
@@ -138,7 +139,8 @@
 
     (if (is-eq diko-amount u0)
       false
-      (try! (as-contract (contract-call? .arkadiko-token transfer diko-amount tx-sender owner none)))
+      ;; TODO: update address for mainnet
+      (try! (as-contract (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.arkadiko-token transfer diko-amount tx-sender owner none)))
     )
     (if (is-eq stx-amount u0)
       false
@@ -178,7 +180,8 @@
     (account (get-account-by-owner (get owner job-entry)))
     (sender tx-sender)
   )
-    (try! (as-contract (contract-call? .arkadiko-token transfer (get cost job-entry) tx-sender sender none)))
+    ;; TODO: update address for mainnet
+    (try! (as-contract (contract-call? 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.arkadiko-token transfer (get cost job-entry) tx-sender sender none)))
     (try! (as-contract (stx-transfer? (get fee job-entry) tx-sender sender)))
 
     (map-set accounts 
