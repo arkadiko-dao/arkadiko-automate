@@ -17,7 +17,7 @@
 (define-data-var executor-contract principal .arkadiko-job-executor-v1-1)
 (define-data-var minimum-fee uint u1000) ;; 0.001 STX min fee
 (define-data-var contract-enabled bool true)
-(define-data-var withdraw-enabled bool false)
+(define-data-var withdraw-enabled bool true)
 
 (define-map accounts { owner: principal } { diko: uint, stx: uint, jobs: (list 999 uint) })
 (define-map jobs { job-id: uint } { enabled: bool, owner: principal, contract: principal, cost: uint, fee: uint, last-executed: uint, executions: uint })
