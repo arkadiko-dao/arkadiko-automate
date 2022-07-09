@@ -1,16 +1,16 @@
 require('dotenv').config();
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const APP_ADDRESS = process.env.APP_ADDRESS;
 const tx = require('@stacks/transactions');
 const utils = require('./utils');
 const network = utils.resolveNetwork();
 
 async function getLastJobId() {
   const result = await tx.callReadOnlyFunction({
-    contractAddress: CONTRACT_ADDRESS,
+    contractAddress: APP_ADDRESS,
     contractName: "arkadiko-job-registry-v1-1",
     functionName: "get-contract-info",
     functionArgs: [],
-    senderAddress: CONTRACT_ADDRESS,
+    senderAddress: APP_ADDRESS,
     network
   });
   return tx.cvToJSON(result).value["last-job-id"].value;
@@ -18,13 +18,13 @@ async function getLastJobId() {
 
 async function getJobInfo(jobId) {
   const result = await tx.callReadOnlyFunction({
-    contractAddress: CONTRACT_ADDRESS,
+    contractAddress: APP_ADDRESS,
     contractName: "arkadiko-job-registry-v1-1",
     functionName: "get-job-by-id",
     functionArgs: [
       tx.uintCV(jobId),
     ],
-    senderAddress: CONTRACT_ADDRESS,
+    senderAddress: APP_ADDRESS,
     network
   });
   return tx.cvToJSON(result).value;
@@ -32,14 +32,14 @@ async function getJobInfo(jobId) {
 
 async function shouldRun(jobId, contract) {
   const result = await tx.callReadOnlyFunction({
-    contractAddress: CONTRACT_ADDRESS,
+    contractAddress: APP_ADDRESS,
     contractName: "arkadiko-job-registry-v1-1",
     functionName: "should-run",
     functionArgs: [
       tx.uintCV(jobId),
       tx.contractPrincipalCV(contract.split(".")[0], contract.split(".")[1]),
     ],
-    senderAddress: CONTRACT_ADDRESS,
+    senderAddress: APP_ADDRESS,
     network
   });
   return tx.cvToJSON(result).value.value;
@@ -47,15 +47,15 @@ async function shouldRun(jobId, contract) {
 
 const executeJob = async (jobId, contract, fee) => {
   const txOptions = {
-    contractAddress: CONTRACT_ADDRESS,
+    contractAddress: APP_ADDRESS,
     contractName: "arkadiko-job-registry-v1-1",
     functionName: "run-job",
     functionArgs: [
       tx.uintCV(jobId),
       tx.contractPrincipalCV(contract.split(".")[0], contract.split(".")[1]),
-      tx.contractPrincipalCV(CONTRACT_ADDRESS, 'arkadiko-job-executor-v1-1'),
+      tx.contractPrincipalCV(APP_ADDRESS, 'arkadiko-job-executor-v1-1'),
     ],
-    senderKey: process.env.STACKS_PRIVATE_KEY,
+    senderKey: process.env.USER_PRIVATE_KEY,
     postConditionMode: 1,
     fee: fee,
     network

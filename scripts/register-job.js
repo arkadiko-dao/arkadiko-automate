@@ -1,5 +1,6 @@
 require('dotenv').config();
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const APP_ADDRESS = process.env.APP_ADDRESS;
+const USER_ADDRESS = process.env.USER_ADDRESS;
 const tx = require('@stacks/transactions');
 const utils = require('./utils');
 const network = utils.resolveNetwork();
@@ -7,15 +8,15 @@ const BN = require('bn.js');
 
 const registerJob = async () => {
   const txOptions = {
-    contractAddress: CONTRACT_ADDRESS,
+    contractAddress: APP_ADDRESS,
     contractName: "arkadiko-job-registry-v1-1",
     functionName: "register-job",
     functionArgs: [
-      tx.contractPrincipalCV(CONTRACT_ADDRESS, 'job-diko-liquidation-pool'),
+      tx.contractPrincipalCV(USER_ADDRESS, 'job-diko-liquidation-pool'),
       tx.uintCV(1000),
-      tx.contractPrincipalCV(CONTRACT_ADDRESS, 'arkadiko-job-cost-calculation-v1-1'),
+      tx.contractPrincipalCV(APP_ADDRESS, 'arkadiko-job-cost-calculation-v1-1'),
     ],
-    senderKey: process.env.STACKS_PRIVATE_KEY,
+    senderKey: process.env.USER_PRIVATE_KEY,
     postConditionMode: 1,
     fee: new BN(10000, 1),
     network
