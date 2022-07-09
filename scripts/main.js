@@ -1,51 +1,115 @@
 require('dotenv').config();
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-const axios = require('axios');
-const url = 'https://stacks-node-api.mainnet.stacks.co/v2/info';
-const fs = require('fs');
+const APP_ADDRESS = process.env.APP_ADDRESS;
 const tx = require('@stacks/transactions');
 const utils = require('./utils');
 const network = utils.resolveNetwork();
-const BN = require('bn.js');
-const stacking = require('@stacks/stacking');
-const c32 = require('c32check');
-const enabledJobIds = [1, 2];
+const fs = require('fs');
 
-// scan mempool:
-// https://stacks-node-api.stacks.co/extended/v1/tx/mempool?address=SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-job-registry-v1-1&unanchored=true
+async function getLastJobId() {
+  const result = await tx.callReadOnlyFunction({
+    contractAddress: APP_ADDRESS,
+    contractName: "arkadiko-job-registry-v1-1",
+    functionName: "get-contract-info",
+    functionArgs: [],
+    senderAddress: APP_ADDRESS,
+    network
+  });
+  return tx.cvToJSON(result).value["last-job-id"].value;
+}
 
-const runJob = async (jobId) => {
+async function getJobInfo(jobId) {
+  const result = await tx.callReadOnlyFunction({
+    contractAddress: APP_ADDRESS,
+    contractName: "arkadiko-job-registry-v1-1",
+    functionName: "get-job-by-id",
+    functionArgs: [
+      tx.uintCV(jobId),
+    ],
+    senderAddress: APP_ADDRESS,
+    network
+  });
+  return tx.cvToJSON(result).value;
+}
+
+async function shouldRun(jobId, contract) {
+  const result = await tx.callReadOnlyFunction({
+    contractAddress: APP_ADDRESS,
+    contractName: "arkadiko-job-registry-v1-1",
+    functionName: "should-run",
+    functionArgs: [
+      tx.uintCV(jobId),
+      tx.contractPrincipalCV(contract.split(".")[0], contract.split(".")[1]),
+    ],
+    senderAddress: APP_ADDRESS,
+    network
+  });
+  return tx.cvToJSON(result).value.value;
+}
+
+const executeJob = async (jobId, contract, fee) => {
   const txOptions = {
-    contractAddress: CONTRACT_ADDRESS,
+    contractAddress: APP_ADDRESS,
     contractName: "arkadiko-job-registry-v1-1",
     functionName: "run-job",
     functionArgs: [
       tx.uintCV(jobId),
-      tx.contractPrincipalCV(CONTRACT_ADDRESS, 'job-steal-tokens'),
-      tx.contractPrincipalCV(CONTRACT_ADDRESS, 'arkadiko-job-executor-v1-1'),
+      tx.contractPrincipalCV(contract.split(".")[0], contract.split(".")[1]),
+      tx.contractPrincipalCV(APP_ADDRESS, 'arkadiko-job-executor-v1-1'),
     ],
-    senderKey: process.env.STACKS_PRIVATE_KEY,
+    senderKey: process.env.USER_PRIVATE_KEY,
     postConditionMode: 1,
+    fee: fee,
     network
   };
 
   const transaction = await tx.makeContractCall(txOptions);
   const result = tx.broadcastTransaction(transaction, network);
-  await utils.waitForTransactionCompletion(transaction.txid());
+  return await utils.waitForTransactionCompletion(transaction.txid());
 };
 
-const exec = async () => {
-  response = await axios(url, { credentials: 'omit' });
+const run = async () => {
+
+  const lastJobId = await getLastJobId();
+  console.log("Number of jobs: ", lastJobId);
+
+  for (let jobId = lastJobId; jobId > 0; jobId--) {
+    try {
+      console.log("\nJob #", jobId);
+
+      const jobInfo = await getJobInfo(jobId);
+      const jobContract = jobInfo["contract"].value;
+      const jobFee =  jobInfo["fee"].value;
+      const shouldExecute = await shouldRun(jobId, jobContract);
+      
+      console.log(" - Contract:", jobContract);
+      console.log(" - Should run: ", shouldExecute);
+
+      if (shouldExecute) {
+        console.log(" - Fee:", jobFee / 1000000, "STX");
+
+        const executionResult = await executeJob(jobId, jobContract, jobFee);
+        console.log(" - Result:", executionResult);
+      }
+
+    } catch (e) {
+      console.log(" - Error:", e);
+    }
+  }
+};
+
+const execute = async () => {
+  const lastBlock = await utils.getBlockHeight();
+
   fs.readFile('lastBlockExecution', 'utf8', function (err, data) {
     const lastBlockExecution = data || 0;
-    const lastBlock = response.data['stacks_tip_height'];
+    const shouldRun = lastBlock > lastBlockExecution;
+    console.log("Current block:", lastBlock, ", last block execution:", lastBlockExecution, "- Run:", shouldRun);
 
-    if (lastBlock > lastBlockExecution) {
-      console.log('Last executed on block', lastBlockExecution, '... running automation bot');
-
-      fs.writeFile('lastBlockExecution', lastBlock.toString(), 'utf8', function (x, y) { console.log(x,y); });
+    if (shouldRun) {
+      fs.writeFile('lastBlockExecution', lastBlock.toString(), 'utf8', function (x, y) { });
+      run();
     }
   });
 };
 
-exec();
+execute();
