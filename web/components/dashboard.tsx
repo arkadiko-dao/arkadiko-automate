@@ -238,6 +238,20 @@ export const Dashboard = () => {
         });
         const result = cvToJSON(call).value;
 
+        const jobContract = result.contract.value;
+        const callRun = await callReadOnlyFunction({
+          contractAddress,
+          contractName: 'arkadiko-job-registry-v1-1',
+          functionName: 'should-run',
+          functionArgs: [
+            uintCV(jobId),
+            contractPrincipalCV(jobContract.split(".")[0], jobContract.split(".")[1])
+          ],
+          senderAddress: stxAddress || '',
+          network: network,
+        });
+        const resultRun = cvToJSON(callRun).value.value;
+
         rows.push(
           <DashboardJobRow
             key={jobId}
@@ -248,6 +262,7 @@ export const Dashboard = () => {
             executions={result.executions.value}
             lastExecuted={result["last-executed"].value}
             enabled={result.enabled.value}
+            shouldRun={resultRun}
             currentBlock={blockHeight}
           />
         );
