@@ -54,8 +54,8 @@ const execute = async () => {
 
   console.log("\nSTX address: ", USER_ADDRESS);
   console.log(" - Jobs: ", accountInfo.jobs.value.length);
-  console.log(" - STX: ", accountInfo.stx.value);
-  console.log(" - DIKO: ", accountInfo.diko.value);
+  console.log(" - STX: ", accountInfo.stx.value / 1000000);
+  console.log(" - DIKO: ", accountInfo.diko.value / 1000000);
 
   for (const jobId of accountInfo.jobs.value) {
     try {
