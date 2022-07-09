@@ -22,6 +22,12 @@ import {
   uintCV,
   contractPrincipalCV,
   standardPrincipalCV,
+  makeStandardFungiblePostCondition,
+  makeStandardSTXPostCondition,
+  makeContractFungiblePostCondition,
+  makeContractSTXPostCondition,
+  FungibleConditionCode,
+  createAssetInfo
 } from '@stacks/transactions';
 
 export const Dashboard = () => {
@@ -98,6 +104,21 @@ export const Dashboard = () => {
   };
 
   const creditAccount = async () => {
+
+    const postConditions = [
+      makeStandardFungiblePostCondition(
+        stxAddress || '',
+        FungibleConditionCode.Equal,
+        uintCV(Number((parseFloat(depositAmountDiko) * 1000000).toFixed(0))).value,
+        createAssetInfo(arkadikoAddress, 'arkadiko-token', 'diko')
+      ),
+      makeStandardSTXPostCondition(
+        stxAddress || '',
+        FungibleConditionCode.Equal,
+        uintCV(Number((parseFloat(depositAmountStx) * 1000000).toFixed(0))).value,
+      ),
+    ];
+
     await doContractCall({
       network,
       contractAddress,
@@ -109,7 +130,7 @@ export const Dashboard = () => {
         uintCV(depositAmountDiko * 1000000),
         uintCV(depositAmountStx * 1000000),
       ],
-      postConditionMode: 0x01,
+      postConditions,
       onFinish: data => {
         setState(prevState => ({
           ...prevState,
@@ -122,6 +143,23 @@ export const Dashboard = () => {
   };
 
   const debitAccount = async () => {
+
+    const postConditions = [
+      makeContractFungiblePostCondition(
+        contractAddress,
+        'arkadiko-job-registry-v1-1',
+        FungibleConditionCode.Equal,
+        uintCV(Number((parseFloat(withdrawAmountDiko) * 1000000).toFixed(0))).value,
+        createAssetInfo(arkadikoAddress, 'arkadiko-token', 'diko')
+      ),
+      makeContractSTXPostCondition(
+        contractAddress,
+        'arkadiko-job-registry-v1-1',
+        FungibleConditionCode.Equal,
+        uintCV(Number((parseFloat(withdrawAmountStx) * 1000000).toFixed(0))).value,
+      )
+    ];
+
     await doContractCall({
       network,
       contractAddress,
@@ -132,7 +170,7 @@ export const Dashboard = () => {
         uintCV(withdrawAmountDiko * 1000000),
         uintCV(withdrawAmountStx * 1000000),
       ],
-      postConditionMode: 0x01,
+      postConditions,
       onFinish: data => {
         setState(prevState => ({
           ...prevState,
@@ -156,7 +194,7 @@ export const Dashboard = () => {
         uintCV(createFee * 1000000),
         contractPrincipalCV(contractAddress, "arkadiko-job-cost-calculation-v1-1")
       ],
-      postConditionMode: 1,
+      postConditions: [],
       onFinish: data => {
         setState(prevState => ({
           ...prevState,

@@ -54,7 +54,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
       functionArgs: [
         uintCV(jobId),
       ],
-      postConditionMode: 1,
+      postConditions: [],
       onFinish: data => {
         setState(prevState => ({
           ...prevState,
