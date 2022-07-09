@@ -470,6 +470,12 @@ export const Dashboard = () => {
                       </dt>
                     </div>
 
+                    {jobItems.length > 0 && (balanceAccountDiko < 10000000 || balanceAccountStx < 1000) ? (
+                      <h3 className='text-sm font-semibold text-red-700'>
+                        Your jobs can not be executed as your account balance is too low.
+                      </h3>
+                    ): null}
+
                   </dl>
                 </div>
 
