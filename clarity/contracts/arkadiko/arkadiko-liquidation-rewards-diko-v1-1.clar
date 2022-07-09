@@ -9,7 +9,7 @@
 
 (define-public (add-rewards (liquidation-rewards <liquidation-rewards-trait>))
   (begin
-    (asserts! (>= (var-get end-epoch-block) block-height) (err u666))
+    (asserts! (>= block-height (var-get end-epoch-block)) (err u666))
     (var-set end-epoch-block (+ (var-get end-epoch-block) u100))
     (ok u123)
   )
