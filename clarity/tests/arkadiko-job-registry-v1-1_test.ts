@@ -37,7 +37,7 @@ Clarinet.test({name: "job registry: register job",
     call.result.expectTuple()['executor-contract'].expectPrincipal(Utils.qualifiedName("arkadiko-job-executor-v1-1"));
     call.result.expectTuple()['minimum-fee'].expectUintWithDecimals(0.001);
     call.result.expectTuple()['contract-enabled'].expectBool(true);
-    call.result.expectTuple()['withdraw-enabled'].expectBool(false);
+    call.result.expectTuple()['withdraw-enabled'].expectBool(true);
 
     result = jobRegistry.shouldRun(1, "job-diko-liquidation-pool");
     result.expectOk().expectBool(false); // execution not required
@@ -192,6 +192,9 @@ Clarinet.test({name: "job registry: credit account and withdraw",
     call = await jobRegistry.getAccountByOwner(wallet_1.address);
     call.result.expectTuple()['diko'].expectUintWithDecimals(1000);
     call.result.expectTuple()['stx'].expectUintWithDecimals(1000);
+
+    result = jobRegistry.setWithdrawEnabled(false);
+    result.expectOk().expectBool(true);
 
     // Withdraw not enabled 
     result = jobRegistry.withdrawAccount(wallet_1, 0, 1000);

@@ -21,6 +21,7 @@ interface DashboardJobRowProps {
   executions: number;
   lastExecuted: number;
   enabled: boolean;
+  shouldRun: boolean;
   currentBlock: number;
 }
 
@@ -32,6 +33,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
   executions,
   lastExecuted,
   enabled,
+  shouldRun,
   currentBlock
 }) => {
 
@@ -52,7 +54,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
       functionArgs: [
         uintCV(jobId),
       ],
-      postConditionMode: 1,
+      postConditions: [],
       onFinish: data => {
         setState(prevState => ({
           ...prevState,
@@ -72,11 +74,20 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
           <tr className="bg-white dark:bg-zinc-800">
             <td className="px-6 py-4 whitespace-nowrap dark:text-white">
               <div className="flex items-center">
-                {enabled ? (
+                {enabled && shouldRun ? (
+                  <>
+                    <p className="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
+                      Enabled
+                    </p>
+                    <p className="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
+                      Should run
+                    </p>
+                  </>
+                ) : enabled ? (
                   <p className="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
                     Enabled
                   </p>
-                ): (
+                ) : (
                   <p className="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full">
                     Disabled
                   </p>

@@ -1,11 +1,7 @@
 ;; Add DIKO to liquidation pool every 1008 blocks
-(impl-trait .arkadiko-automation-trait-v1.automation-trait)
-(use-trait ft-trait .sip-010-trait-ft-standard.sip-010-trait)
 
-(define-constant ERR-NOT-REGISTERED u999)
-(define-constant ERR-ALREADY-INITIALIZED u998)
-
-(define-data-var initialized bool false)
+;; TODO - Update for mainnet
+(impl-trait 'ST3EQ88S02BXXD0T5ZVT3KW947CRMQ1C6DMQY8H19.arkadiko-automation-trait-v1.automation-trait)
 
 (define-public (initialize)
   (ok true)
