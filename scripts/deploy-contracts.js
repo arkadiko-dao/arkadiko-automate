@@ -38,19 +38,11 @@ async function deployAll() {
     { name: "arkadiko-job-registry-v1-1", file: "arkadiko-job-registry-v1-1.clar"},
   ]
 
-  const contracts6 = [
-
-    // Jobs
-    { name: "job-diko-liquidation-pool", file: "job-diko-liquidation-pool.clar"},
-
-  ]
-
-  await utils.deployContractBatch(contracts1, process.env.CONTRACT_ADDRESS, process.env.STACKS_PRIVATE_KEY);
-  await utils.deployContractBatch(contracts2, process.env.CONTRACT_ADDRESS, process.env.STACKS_PRIVATE_KEY);
-  await utils.deployContractBatch(contracts3, process.env.CONTRACT_ADDRESS, process.env.STACKS_PRIVATE_KEY);
-  await utils.deployContractBatch(contracts4, process.env.CONTRACT_ADDRESS, process.env.STACKS_PRIVATE_KEY);
-  await utils.deployContractBatch(contracts5, process.env.CONTRACT_ADDRESS, process.env.STACKS_PRIVATE_KEY);
-  await utils.deployContractBatch(contracts6, process.env.CONTRACT_ADDRESS, process.env.STACKS_PRIVATE_KEY);
+  await utils.deployContractBatch(contracts1, process.env.APP_ADDRESS, process.env.APP_PRIVATE_KEY);
+  await utils.deployContractBatch(contracts2, process.env.APP_ADDRESS, process.env.APP_PRIVATE_KEY);
+  await utils.deployContractBatch(contracts3, process.env.APP_ADDRESS, process.env.APP_PRIVATE_KEY);
+  await utils.deployContractBatch(contracts4, process.env.APP_ADDRESS, process.env.APP_PRIVATE_KEY);
+  await utils.deployContractBatch(contracts5, process.env.APP_ADDRESS, process.env.APP_PRIVATE_KEY);
 
   console.log("Deployed all")
 }
