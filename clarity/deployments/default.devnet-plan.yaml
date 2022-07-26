@@ -1,0 +1,5 @@
+---
+id: 0
+name: Devnet deployment
+network: devnet
+node: "http://localhost:20443"

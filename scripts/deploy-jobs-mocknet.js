@@ -4,8 +4,8 @@ const utils = require('./utils');
 async function deployAll() {
 
   const contracts1 = [
-    { name: "job-test", file: "jobs/job-test.clar"},
-    { name: "job-diko-liquidation-pool", file: "jobs/job-diko-liquidation-pool.clar"},
+    { name: "job-test-mocknet", file: "jobs/job-test-mocknet.clar"},
+    { name: "job-diko-liquidation-pool-mocknet", file: "jobs/job-diko-liquidation-pool-mocknet.clar"},
   ]
 
   await utils.deployContractBatch(contracts1, process.env.USER_ADDRESS, process.env.USER_PRIVATE_KEY);
