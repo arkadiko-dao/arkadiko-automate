@@ -333,7 +333,7 @@ export const Dashboard = () => {
         jobIds.push(jobInfo.value);
       }
 
-      const jobList = await getUserJobsInfo(jobIds, blockHeight);      
+      const jobList = await getUserJobsInfo(jobIds, blockHeight);
       setJobItems(jobList);
 
       setIsLoading(false);
@@ -386,7 +386,7 @@ export const Dashboard = () => {
                   <div className="w-full p-4 border border-indigo-200 rounded-lg shadow-sm bg-indigo-50 dark:bg-indigo-200">
                     <h4 className="text-xs text-indigo-700 uppercase font-headings">Your wallet</h4>
                     <dl className="mt-2 space-y-1">
-                      
+
                       <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                         <dt className="inline-flex items-center text-sm font-medium text-indigo-500 dark:text-indigo-700">
                         {isLoading ? (
@@ -421,9 +421,9 @@ export const Dashboard = () => {
 
                     </dl>
 
-                    <h4 className="text-xs text-indigo-700 uppercase font-headings mt-6">Your balance</h4>
+                    <h4 className="mt-6 text-xs text-indigo-700 uppercase font-headings">Your balance</h4>
                     <dl className="mt-2 space-y-1">
-                      
+
                       <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                         <dt className="inline-flex items-center text-sm font-medium text-indigo-500 dark:text-indigo-700">
                           {isLoading ? (
@@ -623,72 +623,72 @@ export const Dashboard = () => {
               <div className="flex flex-col mt-4">
                 <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                  {isLoading ? (
-                    <>
-                      <Placeholder className="py-2" width={Placeholder.width.FULL} />
-                      <Placeholder className="py-2" width={Placeholder.width.FULL} />
-                    </>
-                  ) : jobItems.length == 0 ? (
-                    <EmptyState
-                      Icon={CollectionIcon}
-                      title="No registered jobs yet"
-                      description="Start by registering your first job below."
-                    />
-                  ) : (
-                    <div className="overflow-hidden border border-gray-200 rounded-lg dark:border-zinc-700">
-                      <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-600">
-                        <thead className="bg-gray-50 dark:bg-zinc-800 dark:bg-opacity-80">
-                          <tr>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
-                            >
-                              Status
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
-                            >
-                              Contract
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
-                            >
-                              Cost
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
-                            >
-                              Fee
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
-                            >
-                              Executions
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
-                            >
-                              Last executed
-                            </th>
-                            <th
-                              scope="col"
-                              className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
-                            >
-                              <span className="sr-only">Actions</span>
-                            </th>
-                          </tr>
-                        </thead>
-
-                        {jobItems}
-
-                      </table>
-                    </div>
-                  )}
+                    {isLoading ? (
+                      <>
+                        <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                        <Placeholder className="py-2" width={Placeholder.width.FULL} />
+                      </>
+                    ) : jobItems.length == 0 ? (
+                      <EmptyState
+                        Icon={CollectionIcon}
+                        title="No registered jobs yet"
+                        description="Start by registering your first job below."
+                      />
+                    ) : (
+                      <div className="overflow-hidden border border-gray-200 rounded-lg dark:border-zinc-700">
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-600">
+                          <thead className="bg-gray-50 dark:bg-zinc-800 dark:bg-opacity-80">
+                            <tr>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
+                              >
+                                Status
+                              </th>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
+                              >
+                                Contract
+                              </th>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
+                              >
+                                Cost
+                              </th>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
+                              >
+                                Fee
+                              </th>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
+                              >
+                                Executions
+                              </th>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
+                              >
+                                Last executed
+                              </th>
+                              <th
+                                scope="col"
+                                className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-zinc-400"
+                              >
+                                <span className="sr-only">Actions</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {jobItems}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -696,7 +696,7 @@ export const Dashboard = () => {
 
             <section className="relative mt-8 overflow-hidden">
               <header className="pb-5 border-b border-gray-200 dark:border-zinc-600">
-                <h3 className="text-lg leading-6 text-gray-900 font-headings dark:text-zinc-50">
+                <h3 className="text-lg leading-6 text-gray-900 font-headings dtext-zinc-50">
                   New Job
                 </h3>
                 <p className="max-w-3xl mt-2 text-sm text-gray-500 dark:text-zinc-400 dark:text-zinc-300">
@@ -705,24 +705,22 @@ export const Dashboard = () => {
               </header>
 
               <div className="mt-4">
-                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-white dark:bg-gray-200">
-
+                <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-200">
                   <p className="mt-2 text-sm">
-                    The full address for the job contract, which should implement the trait <i>arkadiko-automation-trait-v1</i>. 
-                  </p>
-
-                  <p className="inline-flex items-center text-indigo-700 underline hover:text-indigo-600">
+                    The full address for the job contract, which should implement the trait <code className="bg-gray-100 p-0.5">arkadiko-automation-trait-v1</code>.
+                    {' '}
                     <a
+                      className="inline-flex items-center text-sm font-medium text-indigo-500 hover:text-indigo-700"
                       href="https://docs.arkadiko.finance/keepers/keepers-compatible-contracts"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       Learn how to create a job contract.
+                      <StyledIcon as="ExternalLinkIcon" size={4} className="block ml-2" />
                     </a>
-                    <StyledIcon as="ExternalLinkIcon" size={4} className="block ml-2" />
                   </p>
 
-                  <div className="inline-flex items-center w-full min-w-0 mt-2 mb-2 border border-gray-300 rounded-md focus-within:ring-indigo-500 focus-within:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-500">
+                  <div className="inline-flex items-center w-full min-w-0 mt-6 mb-2 border border-gray-300 rounded-md focus-within:ring-indigo-500 focus-within:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-500">
                     <input
                       type="text"
                       // inputMode="decimal"
@@ -764,7 +762,7 @@ export const Dashboard = () => {
 
                   <button
                     type="button"
-                    className="inline-flex justify-center px-4 py-2 mb-2 mt-4 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+                    className="inline-flex justify-center px-4 py-2 mt-4 mb-2 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
                     // disabled={buttonStakeDisabled}
                     onClick={registerJob}
                   >
@@ -777,7 +775,7 @@ export const Dashboard = () => {
             </>
           ) : null}
 
-          <section>
+          <section className="relative mt-8 overflow-hidden">
             <header className="pb-5 border-b border-gray-200 dark:border-zinc-600 sm:flex sm:justify-between sm:items-end">
               <div>
                 <h3 className="text-lg leading-6 text-gray-900 font-headings dark:text-zinc-50">
@@ -790,12 +788,12 @@ export const Dashboard = () => {
             </header>
             <div className="mt-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                
-                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-200">
-                  <dl className="mt-2 space-y-1">
+
+                <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-200">
+                  <dl className="space-y-1">
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
-                      <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
-                        Contract enabled
+                      <dt className="inline-flex items-center text-sm text-gray-500 dark:text-gray-700">
+                        Contract
                         <div className="ml-2">
                           <Tooltip
                             className="z-10"
@@ -813,15 +811,21 @@ export const Dashboard = () => {
                         {isLoading ? (
                           <Placeholder className="py-2" width={Placeholder.width.FULL} />
                         ) : contractInfo["contract-enabled"].value ? (
-                          <>yes</>
+                          <span className="ml-3 inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                            <StyledIcon as="CheckCircleIcon" size={4} className="mr-2" />
+                            Enabled
+                          </span>
                         ) : (
-                          <>no</>
+                          <span className="ml-3 inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                            <StyledIcon as="XCircleIcon" size={4} className="mr-2" />
+                            Disabled
+                          </span>
                         )}
                       </dt>
                     </div>
 
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
-                      <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
+                      <dt className="inline-flex items-center text-sm text-gray-500 dark:text-gray-700">
                         Withdraw enabled
                         <div className="ml-2">
                           <Tooltip
@@ -840,19 +844,25 @@ export const Dashboard = () => {
                         {isLoading ? (
                           <Placeholder className="py-2" width={Placeholder.width.FULL} />
                         ) : contractInfo["withdraw-enabled"].value ? (
-                          <>yes</>
+                          <span className="ml-3 inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                            <StyledIcon as="CheckCircleIcon" size={4} className="mr-2" />
+                            Enabled
+                          </span>
                         ) : (
-                          <>no</>
+                          <span className="ml-3 inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                            <StyledIcon as="XCircleIcon" size={4} className="mr-2" />
+                            Disabled
+                          </span>
                         )}
                       </dt>
                     </div>
                   </dl>
                 </div>
 
-                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-200">
-                  <dl className="mt-2 space-y-1">
+                <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-200">
+                  <dl className="space-y-1">
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
-                      <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
+                      <dt className="inline-flex items-center text-sm text-gray-500 dark:text-gray-700">
                         Minimum fee
                         <div className="ml-2">
                           <Tooltip
@@ -883,7 +893,7 @@ export const Dashboard = () => {
                     </div>
 
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
-                      <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
+                      <dt className="inline-flex items-center text-sm text-gray-500 dark:text-gray-700">
                         Job cost
                         <div className="ml-2">
                           <Tooltip
@@ -912,9 +922,9 @@ export const Dashboard = () => {
                   </dl>
                 </div>
 
-                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-200">
-                  <dl className="mt-2 space-y-1">
-                    
+                <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-200">
+                  <dl className="space-y-1">
+
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
                         Total jobs
@@ -944,7 +954,7 @@ export const Dashboard = () => {
 
                   </dl>
                 </div>
-                
+
               </div>
             </div>
           </section>

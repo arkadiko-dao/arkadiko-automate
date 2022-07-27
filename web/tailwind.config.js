@@ -11,16 +11,13 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        headings: [...defaultTheme.fontFamily.sans],
-        sans: [...defaultTheme.fontFamily.sans],
+        headings: ['Kollektif', ...defaultTheme.fontFamily.sans],
+        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
       },
     },
   },
   variants: {
-    extend: {
-      backgroundColor: ['checked'],
-      borderColor: ['checked'],
-    },
+    extend: {},
   },
   plugins: [require('@tailwindcss/forms')],
 };

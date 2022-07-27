@@ -70,7 +70,7 @@ export const App: React.FC = () => {
       setState(prevState => ({ ...prevState, userData }));
     },
     appDetails: {
-      name: 'Arkadiko Automation',
+      name: 'Arkadiko Keepers',
       icon,
     },
   };
@@ -79,7 +79,7 @@ export const App: React.FC = () => {
     <Connect authOptions={authOptions}>
       <ThemeProvider theme={theme}>
         <AppContext.Provider value={[state, setState]}>
-          <Helmet titleTemplate="Arkadiko Automation - %s" defaultTitle="Arkadiko Automatio" />
+          <Helmet titleTemplate="Arkadiko Keepers - %s" defaultTitle="Arkadiko Keepers" />
           <div className="flex flex-col font-sans bg-white dark:bg-zinc-900 min-height-screen">
             <Header signOut={signOut} />
             <TxStatus />
