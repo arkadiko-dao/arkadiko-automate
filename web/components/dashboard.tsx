@@ -789,8 +789,8 @@ export const Dashboard = () => {
             <div className="mt-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-200">
-                  <dl className="mt-2 space-y-1">
+                <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-200">
+                  <dl className="space-y-1">
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm text-gray-500 dark:text-gray-700">
                         Contract
@@ -859,8 +859,8 @@ export const Dashboard = () => {
                   </dl>
                 </div>
 
-                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-200">
-                  <dl className="mt-2 space-y-1">
+                <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-200">
+                  <dl className="space-y-1">
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm text-gray-500 dark:text-gray-700">
                         Minimum fee
@@ -922,8 +922,8 @@ export const Dashboard = () => {
                   </dl>
                 </div>
 
-                <div className="w-full p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-200">
-                  <dl className="mt-2 space-y-1">
+                <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-200">
+                  <dl className="space-y-1">
 
                     <div className="sm:grid sm:grid-cols-2 sm:gap-4">
                       <dt className="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-700">
