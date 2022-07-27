@@ -34,7 +34,8 @@ Execute actions based on certain events
 8. Use UI to fund your account with STX and DIKO
 9. Use UI to register job with contract name `ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG.job-diko-liquidation-pool-clarinet`
 10. Use UI to register job with contract name `ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG.job-test-clarinet`
-11. Use script to execute job `node main.js`
+11. Deploy jobs with `node deploy-jobs-clarinet.js`
+12. Use script to execute job `node main.js`
 
 ## Setup - Mocknet
 1. Clone repo `https://github.com/stacks-network/stacks-blockchain-docker`
@@ -51,6 +52,7 @@ Execute actions based on certain events
 12. Use UI to fund your account with STX and DIKO
 13. Use UI to register job with contract name `ST3KCNDSWZSFZCC6BE4VA9AXWXC9KEB16FBTRK36T.job-diko-liquidation-pool-mocknet`
 14. Use UI to register job with contract name `ST3KCNDSWZSFZCC6BE4VA9AXWXC9KEB16FBTRK36T.job-test-mocknet`
-15. Use script to execute job `node main.js`
+15. Deploy jobs with `node deploy-jobs-mocknet.js`
+16. Use script to execute job `node main.js`
 
- 
+
