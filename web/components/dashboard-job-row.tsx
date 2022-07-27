@@ -83,9 +83,9 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
                 className="cursor-help"
                 label="Should run"
               >
-                <div>
+                <span>
                   <StyledIcon as="CheckIcon" size={5} className="mx-2 text-green-600" />
-                </div>
+                </span>
               </Tooltip>
             </p>
           ) : enabled ? (
