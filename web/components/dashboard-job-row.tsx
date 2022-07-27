@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 import { AppContext } from '@common/context';
-import { Disclosure } from '@headlessui/react';
+import { Tooltip } from '@blockstack/ui';
+import { Switch } from '@headlessui/react';
 import { StyledIcon } from './ui/styled-icon';
 import { stacksNetwork as network } from '@common/utils';
 import { useSTXAddress } from '@common/use-stx-address';
 import { useConnect } from '@stacks/connect-react';
 import { blocksToTime } from '@common/utils';
+import { classNames } from '@common/class-names';
 
 import {
   AnchorMode,
@@ -67,109 +69,97 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
   };
 
   return (
-    <>
-    <Disclosure as="tbody" className="bg-white dark:bg-zinc-800">
-      {({ open }) => (
-        <>
-          <tr className="bg-white dark:bg-zinc-800">
-            <td className="px-6 py-4 whitespace-nowrap dark:text-white">
-              <div className="flex items-center">
-                {enabled && shouldRun ? (
-                  <>
-                    <p className="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-                      Enabled
-                    </p>
-                    <p className="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-                      Should run
-                    </p>
-                  </>
-                ) : enabled ? (
-                  <p className="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-                    Enabled
-                  </p>
-                ) : (
-                  <p className="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full">
-                    Disabled
-                  </p>
+    <tr className="bg-white dark:bg-zinc-800">
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="flex items-center">
+          {enabled && shouldRun ? (
+            <p className="flex items-center">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                <StyledIcon as="CheckCircleIcon" size={4} className="mr-2" />
+                Enabled
+              </span>
+              <Tooltip
+                hasArrow
+                className="cursor-help"
+                label="Should run"
+              >
+                <div>
+                  <StyledIcon as="CheckIcon" size={5} className="mx-2 text-green-600" />
+                </div>
+              </Tooltip>
+            </p>
+          ) : enabled ? (
+            <p>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                <StyledIcon as="CheckCircleIcon" size={4} className="mr-2" />
+                Enabled
+              </span>
+            </p>
+          ) : (
+            <p>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                <StyledIcon as="XCircleIcon" size={4} className="mr-2" />
+                Disabled
+              </span>
+            </p>
+          )}
+        </div>
+      </td>
+      <td className="px-6 py-4 text-sm whitespace-nowrap">
+        <a href={"https://explorer.stacks.co/txid/" + contract + "?chain=mainnet"} className="inline-flex items-center">
+          {contract.split(".")[1]}
+          <StyledIcon as="ExternalLinkIcon" size={4} className="block ml-2" />
+        </a>
+      </td>
+      <td className="px-6 py-4 text-sm whitespace-nowrap">
+        {cost / 1000000}{' '}
+        <span className="text-xs font-normal">DIKO</span>
+      </td>
+      <td className="px-6 py-4 text-sm whitespace-nowrap">
+        {fee / 1000000}{' '}
+        <span className="text-xs font-normal">STX</span>
+      </td>
+      <td className="px-6 py-4 text-sm whitespace-nowrap">
+        {executions}{' '}
+      </td>
+      <td className="px-6 py-4 text-sm whitespace-nowrap">
+        {lastExecuted == 0 ? (
+          <>
+            Not executed yet
+          </>
+        ):(
+          <>
+            Block {lastExecuted}{' '}
+            (≈{blocksToTime(currentBlock - lastExecuted)} ago)
+          </>
+        )}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="flex items-center">
+          <Tooltip
+            hasArrow
+            label={enabled ? `Enabled. Click to disable.` : `Disabled. Click to enable.`}
+          >
+            <Switch
+              checked={enabled}
+              onChange={() => toggleJobEnabled()}
+              className={classNames(
+                enabled ? 'bg-indigo-500' : 'bg-gray-300',
+                'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500/50'
+              )}
+            >
+              <span className="sr-only">{enabled ? `Disable job` : `Enable job`}</span>
+              <span
+                aria-hidden="false"
+                className={classNames(
+                  enabled ? 'translate-x-5' : 'translate-x-0',
+                  'inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                 )}
-              </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap dark:text-white">
-              <div className="flex items-center">
-                <a href={"https://explorer.stacks.co/txid/" + contract + "?chain=mainnet"} className="inline-flex items-center">
-                  {contract.split(".")[1]}
-                  <StyledIcon as="ExternalLinkIcon" size={4} className="block ml-2" />
-                </a>
-              </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap dark:text-white">
-              <div className="flex items-center">
-                <p>
-                  {cost / 1000000}{' '}
-                  <span className="text-sm font-normal">DIKO</span>
-                </p>
-              </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap dark:text-white">
-              <div className="flex items-center">
-                <p>
-                  {fee / 1000000}{' '}
-                  <span className="text-sm font-normal">STX</span>
-                </p>
-              </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap dark:text-white">
-              <div className="flex items-center">
-                <p>
-                  {executions}{' '}
-                </p>
-              </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap dark:text-white">
-              <div className="flex items-center">
-                <p>
-                  {lastExecuted == 0 ? (
-                    <>
-                      Not executed yet
-                    </>
-                  ):(
-                    <>
-                      Block {lastExecuted}{' '} 
-                      (≈{blocksToTime(currentBlock - lastExecuted)} ago)
-                    </>
-                  )}
-                </p>
-              </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap dark:text-white">
-              <div className="flex items-center">
-                <p>
-                {enabled ? (
-                  <button
-                    type="button"
-                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
-                    disabled={false}
-                    onClick={() => toggleJobEnabled()}
-                  >
-                    Disable
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="inline-flex items-center px-4 py-2 text-sm leading-4 text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
-                    disabled={false}
-                    onClick={() => toggleJobEnabled()}
-                  >
-                    Enable
-                  </button>
-                )}
-                </p>
-              </div>
-            </td>
-          </tr>
-        </>
-      )}
-    </Disclosure>
-    </>
+              />
+            </Switch>
+          </Tooltip>
+        </div>
+      </td>
+    </tr>
   );
 };
