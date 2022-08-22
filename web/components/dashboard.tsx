@@ -33,6 +33,7 @@ import {
 export const Dashboard = () => {
   const stxAddress = useSTXAddress();
   const { doContractCall } = useConnect();
+  const { doOpenAuth } = useConnect();
 
   const contractAddress = process.env.APP_CONTRACT_ADDRESS || '';
   const arkadikoAddress = process.env.ARKADIKO_CONTRACT_ADDRESS || '';
@@ -840,7 +841,29 @@ export const Dashboard = () => {
               </div>
             </section>
             </>
-          ) : null}
+          ) : (
+            <div className="flex justify-center mt-6 text-center">
+              <div className="flow-root md:w-1/4 p-8 bg-white border-2 border-gray-300 border-dotted rounded-lg dark:bg-zinc-900 dark:border-500">
+                <div className="relative">
+                  
+                  <p className="text-lg font-medium leading-6 text-gray-900 dark:text-zinc-100">
+                    Welcome to the Arkadiko Keepers dashboard.
+                  </p>
+
+                  <p className="mt-2 text-base text-gray-500 dark:text-zinc-400">
+                    You will be able to easily manage your account and jobs here. Connect your wallet to get started!
+                  </p>
+                  <button
+                    type="button"
+                    className="relative inline-flex items-center mt-6 px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 "
+                    onClick={() => doOpenAuth()}
+                  >
+                    <span>Connect Wallet</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <section className="relative mt-8 overflow-hidden">
             <header className="pb-5 border-b border-gray-200 dark:border-zinc-600 sm:flex sm:justify-between sm:items-end">
