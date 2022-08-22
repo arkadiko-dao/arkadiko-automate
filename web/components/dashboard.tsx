@@ -39,7 +39,6 @@ export const Dashboard = () => {
 
   const [state, setState] = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [balanceWalletDiko, setBalanceWalletDiko] = useState(0);
   const [balanceWalletStx, setBalanceWalletStx] = useState(0);
@@ -347,10 +346,8 @@ export const Dashboard = () => {
     };
 
     if (stxAddress) {
-      setIsLoggedIn(true);
       fetchInfo();
     } else {
-      setIsLoggedIn(false);
       fetchGeneralInfo();
     }
   }, []);
@@ -368,7 +365,7 @@ export const Dashboard = () => {
 
       <Container>
         <main className="relative flex-1 py-12">
-          {isLoggedIn ? (
+          {state.userData ? (
             <>
             <section>
               <header className="pb-5 border-b border-gray-200 dark:border-zinc-600 sm:flex sm:justify-between sm:items-end">
