@@ -302,48 +302,51 @@ export const Dashboard = () => {
       let rows = [];
 
       for (const jobId of jobIds) {
-        const call = await callReadOnlyFunction({
-          contractAddress,
-          contractName: 'arkadiko-job-registry-v1-1',
-          functionName: 'get-job-by-id',
-          functionArgs: [
-            uintCV(jobId)
-          ],
-          senderAddress: stxAddress || '',
-          network: network,
-        });
-        const result = cvToJSON(call).value;
-
-        const jobContract = result.contract.value;
-        const callRun = await callReadOnlyFunction({
-          contractAddress,
-          contractName: 'arkadiko-job-registry-v1-1',
-          functionName: 'should-run',
-          functionArgs: [
-            uintCV(jobId),
-            contractPrincipalCV(jobContract.split(".")[0], jobContract.split(".")[1])
-          ],
-          senderAddress: stxAddress || '',
-          network: network,
-        });
-        const resultRun = cvToJSON(callRun).value.value;
-
-        rows.push(
-          <DashboardJobRow
-            key={jobId}
-            jobId={jobId}
-            contract={result.contract.value}
-            cost={result.cost.value}
-            fee={result.fee.value}
-            executions={result.executions.value}
-            lastExecuted={result["last-executed"].value}
-            enabled={result.enabled.value}
-            shouldRun={resultRun}
-            currentBlock={blockHeight}
-          />
-        );
+        try {
+          const call = await callReadOnlyFunction({
+            contractAddress,
+            contractName: 'arkadiko-job-registry-v1-1',
+            functionName: 'get-job-by-id',
+            functionArgs: [
+              uintCV(jobId)
+            ],
+            senderAddress: stxAddress || '',
+            network: network,
+          });
+          const result = cvToJSON(call).value;
+  
+          const jobContract = result.contract.value;
+          const callRun = await callReadOnlyFunction({
+            contractAddress,
+            contractName: 'arkadiko-job-registry-v1-1',
+            functionName: 'should-run',
+            functionArgs: [
+              uintCV(jobId),
+              contractPrincipalCV(jobContract.split(".")[0], jobContract.split(".")[1])
+            ],
+            senderAddress: stxAddress || '',
+            network: network,
+          });
+          const resultRun = cvToJSON(callRun).value.value;
+  
+          rows.push(
+            <DashboardJobRow
+              key={jobId}
+              jobId={jobId}
+              contract={result.contract.value}
+              cost={result.cost.value}
+              fee={result.fee.value}
+              executions={result.executions.value}
+              lastExecuted={result["last-executed"].value}
+              enabled={result.enabled.value}
+              shouldRun={resultRun}
+              currentBlock={blockHeight}
+            />
+          );
+        } catch (e) {
+          console.log("Job #", jobId, "error:", e);
+        }
       }
-
       return rows;
     };
 
