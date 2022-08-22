@@ -47,8 +47,11 @@ export const Dashboard = () => {
 
   const [depositAmountDiko, setDepositAmountDiko] = useState(0);
   const [depositAmountStx, setDepositAmountStx] = useState(0);
+  const [depositEnabled, setDepositEnabled] = useState(false);
+
   const [withdrawAmountDiko, setWithdrawAmountDiko] = useState(0);
   const [withdrawAmountStx, setWithdrawAmountStx] = useState(0);
+  const [withdrawEnabled, setWithdrawEnabled] = useState(false);
 
   const [createContract, setCreateContract] = useState("");
   const [createFee, setCreateFee] = useState(0.001);
@@ -58,21 +61,25 @@ export const Dashboard = () => {
 
   const onInputDepositDikoChange = (event: any) => {
     const value = event.target.value;
+    setDepositEnabled(value > 0 || depositAmountStx > 0);
     setDepositAmountDiko(value);
   };
 
   const onInputDepositStxChange = (event: any) => {
     const value = event.target.value;
+    setDepositEnabled(value > 0 || depositAmountDiko > 0);
     setDepositAmountStx(value);
   };
 
   const onInputWithdrawDikoChange = (event: any) => {
     const value = event.target.value;
+    setWithdrawEnabled(value > 0 || withdrawAmountStx > 0);
     setWithdrawAmountDiko(value);
   };
 
   const onInputWithdrawStxChange = (event: any) => {
     const value = event.target.value;
+    setWithdrawEnabled(value > 0 || withdrawAmountDiko > 0);
     setWithdrawAmountStx(value);
   };
 
@@ -87,19 +94,27 @@ export const Dashboard = () => {
   };
 
   const depositMaxAmountDiko = () => {
-    setDepositAmountDiko((balanceWalletDiko / 1000000).toString());
+    const value = (balanceWalletDiko / 1000000);
+    setDepositEnabled(value > 0 || depositAmountStx > 0);
+    setDepositAmountDiko(value);
   };
 
   const depositMaxAmountStx = () => {
-    setDepositAmountStx((balanceWalletStx / 1000000).toString());
+    const value = (balanceWalletStx / 1000000);
+    setDepositEnabled(value > 0 || depositAmountDiko > 0);
+    setDepositAmountStx(value);
   };
 
   const withdrawMaxAmountDiko = () => {
-    setWithdrawAmountDiko((balanceAccountDiko / 1000000).toString());
+    const value = (balanceAccountDiko / 1000000);
+    setWithdrawEnabled(value > 0 || withdrawAmountStx > 0);
+    setWithdrawAmountDiko(value);
   };
 
   const withdrawMaxAmountStx = () => {
-    setWithdrawAmountStx((balanceAccountStx / 1000000).toString());
+    const value = (balanceAccountStx / 1000000);
+    setWithdrawEnabled(value > 0 || withdrawAmountDiko > 0);
+    setWithdrawAmountStx(value);
   };
 
   const creditAccount = async () => {
@@ -564,7 +579,7 @@ export const Dashboard = () => {
                                   <button
                                     type="button"
                                     className="inline-flex justify-center px-4 py-2 mb-4 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-                                    // disabled={buttonStakeDisabled}
+                                    disabled={!depositEnabled}
                                     onClick={creditAccount}
                                   >
                                     Credit account
@@ -604,7 +619,7 @@ export const Dashboard = () => {
                                   <button
                                     type="button"
                                     className="inline-flex justify-center px-4 py-2 mb-4 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-                                    // disabled={buttonUnstakeDisabled}
+                                    disabled={!withdrawEnabled}
                                     onClick={debitAccount}
                                   >
                                     Debit account
@@ -734,14 +749,9 @@ export const Dashboard = () => {
                   <div className="inline-flex items-center w-full min-w-0 mt-6 mb-2 border border-gray-300 rounded-md focus-within:ring-indigo-500 focus-within:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-500">
                     <input
                       type="text"
-                      // inputMode="decimal"
                       autoComplete="off"
                       autoCorrect="off"
-                      // pattern="^[0-9]*[.,]?[0-9]*$"
                       placeholder=""
-                      // name={inputName}
-                      // id={inputId}
-                      // aria-label={inputLabel}
                       className="flex-1 min-w-0 px-3 mr-2 border-0 rounded-md sm:text-sm focus:outline-none focus:ring-0 dark:bg-zinc-700 dark:text-zinc-200"
                       value={createContract}
                       onChange={onInputCreateContractChange}
@@ -761,9 +771,6 @@ export const Dashboard = () => {
                       autoCorrect="off"
                       pattern="^[0-9]*[.,]?[0-9]*$"
                       placeholder="0.001"
-                      // name={inputName}
-                      // id={inputId}
-                      // aria-label={inputLabel}
                       className="flex-1 min-w-0 px-3 mr-2 border-0 rounded-md sm:text-sm focus:outline-none focus:ring-0 dark:bg-zinc-700 dark:text-zinc-200"
                       value={createFee}
                       onChange={onInputCreateFeeChange}
