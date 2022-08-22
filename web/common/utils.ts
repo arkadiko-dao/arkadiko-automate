@@ -47,6 +47,13 @@ export async function getBlockHeight() {
   return currentBlock;
 }
 
+export async function getContractInfo(contract: string) {
+  const client = getRPCClient();
+  const response = await fetch(`${client.url}/extended/v1/contract/${contract}`, { credentials: 'omit' });
+  const data = await response.json();
+  return data;
+}
+
 export const blocksToTime = (blocks:number) => {
 
   const minutesPerBlock = 10;

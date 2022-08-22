@@ -3,7 +3,7 @@ import { AppContext } from '@common/context';
 import { Tooltip } from '@blockstack/ui';
 import { InformationCircleIcon, MinusCircleIcon, PlusCircleIcon, CollectionIcon } from '@heroicons/react/solid';
 import { Placeholder } from "./ui/placeholder";
-import { microToReadable, getRPCClient, getBlockHeight } from '@common/utils';
+import { microToReadable, getRPCClient, getBlockHeight, getContractInfo } from '@common/utils';
 import { stacksNetwork as network } from '@common/utils';
 import { Tab } from '@headlessui/react';
 import { InputAmount } from './ui/input-amount';
@@ -55,6 +55,7 @@ export const Dashboard = () => {
 
   const [createContract, setCreateContract] = useState("");
   const [createFee, setCreateFee] = useState(0.001);
+  const [createContractError, setCreateContractError] = useState("");
 
   const [jobItems, setJobItems] = useState([]);
   const [contractInfo, setContractInfo] = useState({});
@@ -85,6 +86,12 @@ export const Dashboard = () => {
 
   const onInputCreateContractChange = (event: any) => {
     const value = event.target.value;
+    const lowerCase = value.toLowerCase();
+    if (!lowerCase.startsWith("S") && !value.includes(".")) {
+      setCreateContractError("This is not a valid contract address. Ex: SP6P4EJF0VG8V0RB3TQQKJBHDQKEF6NVRD1KZE3C.my-job");
+    } else {
+      setCreateContractError("");
+    }
     setCreateContract(value);
   };
 
@@ -195,6 +202,27 @@ export const Dashboard = () => {
   };
 
   const registerJob = async () => {
+
+    // Check contract first
+    const contractInfo = await getContractInfo(createContract);
+    const hasError = contractInfo.error != undefined;
+    if (hasError) {
+      setCreateContractError("The contract does not exist. Please deploy your contract first.");
+      return;
+    }
+
+    // Check trait
+    const sourceCode = contractInfo.source_code;
+    const hasMethodInit = sourceCode.includes("(define-public (initialize)");
+    const hasMethodCheck = sourceCode.includes("(define-read-only (check-job)");
+    const hasMethodRun = sourceCode.includes("(define-public (run-job)");
+    const implementsTrait = hasMethodInit && hasMethodCheck && hasMethodRun;
+    if (!implementsTrait) {
+      setCreateContractError("The contract does not implement the necessary trait.");
+      return;
+    }
+
+    setCreateContractError("");
     await doContractCall({
       network,
       contractAddress,
@@ -745,6 +773,24 @@ export const Dashboard = () => {
                       <StyledIcon as="ExternalLinkIcon" size={4} className="block ml-2" />
                     </a>
                   </p>
+
+                  {createContractError != "" ? (
+                    <div
+                      className="p-3 mt-2 border-l-4 border-red-400 rounded-tr-md rounded-br-md bg-red-50"
+                      role="alert"
+                    >
+                      <div className="flex">
+                        <div className="shrink-0 mt-0.5">
+                          <StyledIcon as="XCircleIcon" size={4} className="text-red-400" />
+                        </div>
+                        <div className="flex-1 ml-3">
+                          <p className="text-sm text-red-700">
+                            {createContractError}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ): null}
 
                   <div className="inline-flex items-center w-full min-w-0 mt-2 mb-2 border border-gray-300 rounded-md focus-within:ring-indigo-500 focus-within:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-500">
                     <input
