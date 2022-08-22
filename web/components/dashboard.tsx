@@ -746,7 +746,7 @@ export const Dashboard = () => {
                     </a>
                   </p>
 
-                  <div className="inline-flex items-center w-full min-w-0 mt-6 mb-2 border border-gray-300 rounded-md focus-within:ring-indigo-500 focus-within:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-500">
+                  <div className="inline-flex items-center w-full min-w-0 mt-2 mb-2 border border-gray-300 rounded-md focus-within:ring-indigo-500 focus-within:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-500">
                     <input
                       type="text"
                       autoComplete="off"
