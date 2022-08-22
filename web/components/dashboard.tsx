@@ -86,12 +86,6 @@ export const Dashboard = () => {
 
   const onInputCreateContractChange = (event: any) => {
     const value = event.target.value;
-    const lowerCase = value.toLowerCase();
-    if (!lowerCase.startsWith("S") && !value.includes(".")) {
-      setCreateContractError("This is not a valid contract address. Ex: SP6P4EJF0VG8V0RB3TQQKJBHDQKEF6NVRD1KZE3C.my-job");
-    } else {
-      setCreateContractError("");
-    }
     setCreateContract(value);
   };
 
@@ -202,6 +196,12 @@ export const Dashboard = () => {
   };
 
   const registerJob = async () => {
+
+    const validInput = createContract.toLowerCase().startsWith("S") && createContract.includes(".");
+    if (!validInput) {
+      setCreateContractError("This is not a valid contract address. Ex: SP6P4EJF0VG8V0RB3TQQKJBHDQKEF6NVRD1KZE3C.my-job");
+      return;
+    } 
 
     // Check contract first
     const contractInfo = await getContractInfo(createContract);
