@@ -56,7 +56,7 @@ const executeJob = async (jobId, contract, fee) => {
       tx.contractPrincipalCV(contract.split(".")[0], contract.split(".")[1]),
       tx.contractPrincipalCV(APP_ADDRESS, 'arkadiko-job-executor-v1-1'),
     ],
-    senderKey: process.env.USER_PRIVATE_KEY,
+    senderKey: process.env.KEEPER_PRIVATE_KEY,
     postConditionMode: 1,
     fee: fee,
     network
