@@ -843,7 +843,7 @@ export const Dashboard = () => {
             </>
           ) : (
             <div className="flex justify-center mt-6 text-center">
-              <div className="flow-root md:w-1/4 p-8 bg-white border-2 border-gray-300 border-dotted rounded-lg dark:bg-zinc-900 dark:border-500">
+              <div className="flow-root md:w-1/2 p-8 bg-white border-2 border-gray-300 border-dotted rounded-lg dark:bg-zinc-900 dark:border-500">
                 <div className="relative">
                   
                   <p className="text-lg font-medium leading-6 text-gray-900 dark:text-zinc-100">
