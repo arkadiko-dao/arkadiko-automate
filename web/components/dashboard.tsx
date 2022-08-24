@@ -3,7 +3,7 @@ import { AppContext } from '@common/context';
 import { Tooltip } from '@blockstack/ui';
 import { InformationCircleIcon, MinusCircleIcon, PlusCircleIcon, CollectionIcon } from '@heroicons/react/solid';
 import { Placeholder } from "./ui/placeholder";
-import { microToReadable, getRPCClient, getBlockHeight } from '@common/utils';
+import { microToReadable, getRPCClient, getBlockHeight, getContractInfo } from '@common/utils';
 import { stacksNetwork as network } from '@common/utils';
 import { Tab } from '@headlessui/react';
 import { InputAmount } from './ui/input-amount';
@@ -33,13 +33,13 @@ import {
 export const Dashboard = () => {
   const stxAddress = useSTXAddress();
   const { doContractCall } = useConnect();
+  const { doOpenAuth } = useConnect();
 
   const contractAddress = process.env.APP_CONTRACT_ADDRESS || '';
   const arkadikoAddress = process.env.ARKADIKO_CONTRACT_ADDRESS || '';
 
   const [state, setState] = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [balanceWalletDiko, setBalanceWalletDiko] = useState(0);
   const [balanceWalletStx, setBalanceWalletStx] = useState(0);
@@ -48,32 +48,40 @@ export const Dashboard = () => {
 
   const [depositAmountDiko, setDepositAmountDiko] = useState(0);
   const [depositAmountStx, setDepositAmountStx] = useState(0);
+  const [depositEnabled, setDepositEnabled] = useState(false);
+
   const [withdrawAmountDiko, setWithdrawAmountDiko] = useState(0);
   const [withdrawAmountStx, setWithdrawAmountStx] = useState(0);
+  const [withdrawEnabled, setWithdrawEnabled] = useState(false);
 
   const [createContract, setCreateContract] = useState("");
   const [createFee, setCreateFee] = useState(0.001);
+  const [createContractError, setCreateContractError] = useState("");
 
   const [jobItems, setJobItems] = useState([]);
   const [contractInfo, setContractInfo] = useState({});
 
   const onInputDepositDikoChange = (event: any) => {
     const value = event.target.value;
+    setDepositEnabled(value > 0 || depositAmountStx > 0);
     setDepositAmountDiko(value);
   };
 
   const onInputDepositStxChange = (event: any) => {
     const value = event.target.value;
+    setDepositEnabled(value > 0 || depositAmountDiko > 0);
     setDepositAmountStx(value);
   };
 
   const onInputWithdrawDikoChange = (event: any) => {
     const value = event.target.value;
+    setWithdrawEnabled(value > 0 || withdrawAmountStx > 0);
     setWithdrawAmountDiko(value);
   };
 
   const onInputWithdrawStxChange = (event: any) => {
     const value = event.target.value;
+    setWithdrawEnabled(value > 0 || withdrawAmountDiko > 0);
     setWithdrawAmountStx(value);
   };
 
@@ -88,19 +96,27 @@ export const Dashboard = () => {
   };
 
   const depositMaxAmountDiko = () => {
-    setDepositAmountDiko((balanceWalletDiko / 1000000).toString());
+    const value = (balanceWalletDiko / 1000000);
+    setDepositEnabled(value > 0 || depositAmountStx > 0);
+    setDepositAmountDiko(value);
   };
 
   const depositMaxAmountStx = () => {
-    setDepositAmountStx((balanceWalletStx / 1000000).toString());
+    const value = (balanceWalletStx / 1000000);
+    setDepositEnabled(value > 0 || depositAmountDiko > 0);
+    setDepositAmountStx(value);
   };
 
   const withdrawMaxAmountDiko = () => {
-    setWithdrawAmountDiko((balanceAccountDiko / 1000000).toString());
+    const value = (balanceAccountDiko / 1000000);
+    setWithdrawEnabled(value > 0 || withdrawAmountStx > 0);
+    setWithdrawAmountDiko(value);
   };
 
   const withdrawMaxAmountStx = () => {
-    setWithdrawAmountStx((balanceAccountStx / 1000000).toString());
+    const value = (balanceAccountStx / 1000000);
+    setWithdrawEnabled(value > 0 || withdrawAmountDiko > 0);
+    setWithdrawAmountStx(value);
   };
 
   const creditAccount = async () => {
@@ -181,6 +197,33 @@ export const Dashboard = () => {
   };
 
   const registerJob = async () => {
+
+    const validInput = createContract.toLowerCase().startsWith("S") && createContract.includes(".");
+    if (!validInput) {
+      setCreateContractError("This is not a valid contract address. Ex: SP6P4EJF0VG8V0RB3TQQKJBHDQKEF6NVRD1KZE3C.my-job");
+      return;
+    } 
+
+    // Check contract first
+    const contractInfo = await getContractInfo(createContract);
+    const hasError = contractInfo.error != undefined;
+    if (hasError) {
+      setCreateContractError("The contract does not exist. Please deploy your contract first.");
+      return;
+    }
+
+    // Check trait
+    const sourceCode = contractInfo.source_code;
+    const hasMethodInit = sourceCode.includes("(define-public (initialize)");
+    const hasMethodCheck = sourceCode.includes("(define-read-only (check-job)");
+    const hasMethodRun = sourceCode.includes("(define-public (run-job)");
+    const implementsTrait = hasMethodInit && hasMethodCheck && hasMethodRun;
+    if (!implementsTrait) {
+      setCreateContractError("The contract does not implement the necessary trait.");
+      return;
+    }
+
+    setCreateContractError("");
     await doContractCall({
       network,
       contractAddress,
@@ -260,48 +303,51 @@ export const Dashboard = () => {
       let rows = [];
 
       for (const jobId of jobIds) {
-        const call = await callReadOnlyFunction({
-          contractAddress,
-          contractName: 'arkadiko-job-registry-v1-1',
-          functionName: 'get-job-by-id',
-          functionArgs: [
-            uintCV(jobId)
-          ],
-          senderAddress: stxAddress || '',
-          network: network,
-        });
-        const result = cvToJSON(call).value;
-
-        const jobContract = result.contract.value;
-        const callRun = await callReadOnlyFunction({
-          contractAddress,
-          contractName: 'arkadiko-job-registry-v1-1',
-          functionName: 'should-run',
-          functionArgs: [
-            uintCV(jobId),
-            contractPrincipalCV(jobContract.split(".")[0], jobContract.split(".")[1])
-          ],
-          senderAddress: stxAddress || '',
-          network: network,
-        });
-        const resultRun = cvToJSON(callRun).value.value;
-
-        rows.push(
-          <DashboardJobRow
-            key={jobId}
-            jobId={jobId}
-            contract={result.contract.value}
-            cost={result.cost.value}
-            fee={result.fee.value}
-            executions={result.executions.value}
-            lastExecuted={result["last-executed"].value}
-            enabled={result.enabled.value}
-            shouldRun={resultRun}
-            currentBlock={blockHeight}
-          />
-        );
+        try {
+          const call = await callReadOnlyFunction({
+            contractAddress,
+            contractName: 'arkadiko-job-registry-v1-1',
+            functionName: 'get-job-by-id',
+            functionArgs: [
+              uintCV(jobId)
+            ],
+            senderAddress: stxAddress || '',
+            network: network,
+          });
+          const result = cvToJSON(call).value;
+  
+          const jobContract = result.contract.value;
+          const callRun = await callReadOnlyFunction({
+            contractAddress,
+            contractName: 'arkadiko-job-registry-v1-1',
+            functionName: 'should-run',
+            functionArgs: [
+              uintCV(jobId),
+              contractPrincipalCV(jobContract.split(".")[0], jobContract.split(".")[1])
+            ],
+            senderAddress: stxAddress || '',
+            network: network,
+          });
+          const resultRun = cvToJSON(callRun).value.value;
+  
+          rows.push(
+            <DashboardJobRow
+              key={jobId}
+              jobId={jobId}
+              contract={result.contract.value}
+              cost={result.cost.value}
+              fee={result.fee.value}
+              executions={result.executions.value}
+              lastExecuted={result["last-executed"].value}
+              enabled={result.enabled.value}
+              shouldRun={resultRun}
+              currentBlock={blockHeight}
+            />
+          );
+        } catch (e) {
+          console.log("Job #", jobId, "error:", e);
+        }
       }
-
       return rows;
     };
 
@@ -347,10 +393,8 @@ export const Dashboard = () => {
     };
 
     if (stxAddress) {
-      setIsLoggedIn(true);
       fetchInfo();
     } else {
-      setIsLoggedIn(false);
       fetchGeneralInfo();
     }
   }, []);
@@ -368,7 +412,7 @@ export const Dashboard = () => {
 
       <Container>
         <main className="relative flex-1 py-12">
-          {isLoggedIn ? (
+          {state.userData ? (
             <>
             <section>
               <header className="pb-5 border-b border-gray-200 dark:border-zinc-600 sm:flex sm:justify-between sm:items-end">
@@ -567,7 +611,7 @@ export const Dashboard = () => {
                                   <button
                                     type="button"
                                     className="inline-flex justify-center px-4 py-2 mb-4 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-                                    // disabled={buttonStakeDisabled}
+                                    disabled={!depositEnabled}
                                     onClick={creditAccount}
                                   >
                                     Credit account
@@ -607,7 +651,7 @@ export const Dashboard = () => {
                                   <button
                                     type="button"
                                     className="inline-flex justify-center px-4 py-2 mb-4 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-                                    // disabled={buttonUnstakeDisabled}
+                                    disabled={!withdrawEnabled}
                                     onClick={debitAccount}
                                   >
                                     Debit account
@@ -734,17 +778,30 @@ export const Dashboard = () => {
                     </a>
                   </p>
 
-                  <div className="inline-flex items-center w-full min-w-0 mt-6 mb-2 border border-gray-300 rounded-md focus-within:ring-indigo-500 focus-within:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-500">
+                  {createContractError != "" ? (
+                    <div
+                      className="p-3 mt-2 border-l-4 border-red-400 rounded-tr-md rounded-br-md bg-red-50"
+                      role="alert"
+                    >
+                      <div className="flex">
+                        <div className="shrink-0 mt-0.5">
+                          <StyledIcon as="XCircleIcon" size={4} className="text-red-400" />
+                        </div>
+                        <div className="flex-1 ml-3">
+                          <p className="text-sm text-red-700">
+                            {createContractError}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ): null}
+
+                  <div className="inline-flex items-center w-full min-w-0 mt-2 mb-2 border border-gray-300 rounded-md focus-within:ring-indigo-500 focus-within:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-500">
                     <input
                       type="text"
-                      // inputMode="decimal"
                       autoComplete="off"
                       autoCorrect="off"
-                      // pattern="^[0-9]*[.,]?[0-9]*$"
                       placeholder=""
-                      // name={inputName}
-                      // id={inputId}
-                      // aria-label={inputLabel}
                       className="flex-1 min-w-0 px-3 mr-2 border-0 rounded-md sm:text-sm focus:outline-none focus:ring-0 dark:bg-zinc-700 dark:text-zinc-200"
                       value={createContract}
                       onChange={onInputCreateContractChange}
@@ -764,9 +821,6 @@ export const Dashboard = () => {
                       autoCorrect="off"
                       pattern="^[0-9]*[.,]?[0-9]*$"
                       placeholder="0.001"
-                      // name={inputName}
-                      // id={inputId}
-                      // aria-label={inputLabel}
                       className="flex-1 min-w-0 px-3 mr-2 border-0 rounded-md sm:text-sm focus:outline-none focus:ring-0 dark:bg-zinc-700 dark:text-zinc-200"
                       value={createFee}
                       onChange={onInputCreateFeeChange}
@@ -787,7 +841,29 @@ export const Dashboard = () => {
               </div>
             </section>
             </>
-          ) : null}
+          ) : (
+            <div className="flex justify-center mt-6 text-center">
+              <div className="flow-root md:w-1/2 p-8 bg-white border-2 border-gray-300 border-dotted rounded-lg dark:bg-zinc-900 dark:border-500">
+                <div className="relative">
+                  
+                  <p className="text-lg font-medium leading-6 text-gray-900 dark:text-zinc-100">
+                    Welcome to the Arkadiko Keepers dashboard.
+                  </p>
+
+                  <p className="mt-2 text-base text-gray-500 dark:text-zinc-400">
+                    You will be able to easily manage your account and jobs here. Connect your wallet to get started!
+                  </p>
+                  <button
+                    type="button"
+                    className="relative inline-flex items-center mt-6 px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 "
+                    onClick={() => doOpenAuth()}
+                  >
+                    <span>Connect Wallet</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <section className="relative mt-8 overflow-hidden">
             <header className="pb-5 border-b border-gray-200 dark:border-zinc-600 sm:flex sm:justify-between sm:items-end">
