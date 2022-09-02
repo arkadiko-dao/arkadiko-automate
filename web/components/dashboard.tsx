@@ -198,7 +198,7 @@ export const Dashboard = () => {
 
   const registerJob = async () => {
 
-    const validInput = createContract.toLowerCase().startsWith("S") && createContract.includes(".");
+    const validInput = createContract.toLowerCase().startsWith("s") && createContract.includes(".");
     if (!validInput) {
       setCreateContractError("This is not a valid contract address. Ex: SP6P4EJF0VG8V0RB3TQQKJBHDQKEF6NVRD1KZE3C.my-job");
       return;
