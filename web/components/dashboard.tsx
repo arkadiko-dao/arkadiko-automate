@@ -346,6 +346,7 @@ export const Dashboard = () => {
               lastExecuted={result["last-executed"].value}
               enabled={result.enabled.value}
               shouldRun={resultRun}
+              error={''}
               currentBlock={blockHeight}
             />
           );
@@ -363,6 +364,7 @@ export const Dashboard = () => {
               lastExecuted={result["last-executed"].value}
               enabled={result.enabled.value}
               shouldRun={false}
+              error={e.toString()}
               currentBlock={blockHeight}
             />
           );

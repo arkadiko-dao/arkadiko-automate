@@ -24,6 +24,7 @@ interface DashboardJobRowProps {
   lastExecuted: number;
   enabled: boolean;
   shouldRun: boolean;
+  error: string;
   currentBlock: number;
 }
 
@@ -36,6 +37,7 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
   lastExecuted,
   enabled,
   shouldRun,
+  error,
   currentBlock
 }) => {
 
@@ -72,7 +74,19 @@ export const DashboardJobRow: React.FC<DashboardJobRowProps> = ({
     <tr className="bg-white dark:bg-zinc-800">
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
-          {enabled && shouldRun ? (
+          {error ? (
+            <Tooltip
+              hasArrow
+              label={error}
+            >
+              <p>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                  <StyledIcon as="CheckCircleIcon" size={4} className="mr-2" />
+                  Error
+                </span>
+              </p>
+            </Tooltip>
+          ) : enabled && shouldRun ? (
             <p className="flex items-center">
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold bg-green-100 text-green-800">
                 <StyledIcon as="CheckCircleIcon" size={4} className="mr-2" />
