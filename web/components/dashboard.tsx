@@ -31,7 +31,7 @@ import {
 } from '@stacks/transactions';
 
 export const Dashboard = () => {
-  const stxAddress = useSTXAddress();
+  const stxAddress = 'SP1Y6ZAD2ZZFKNWN58V8EA42R3VRWFJSGWFAD9C36'; // useSTXAddress();
   const { doContractCall } = useConnect();
   const { doOpenAuth } = useConnect();
 
@@ -303,6 +303,7 @@ export const Dashboard = () => {
       let rows = [];
 
       for (const jobId of jobIds) {
+        let result;
         try {
           const call = await callReadOnlyFunction({
             contractAddress,
@@ -314,8 +315,12 @@ export const Dashboard = () => {
             senderAddress: stxAddress || '',
             network: network,
           });
-          const result = cvToJSON(call).value;
+          result = cvToJSON(call).value;
+        } catch (e) {
+          console.log("Fetching Job #", jobId, "error:", e);
+        }
   
+        try {
           const jobContract = result.contract.value;
           const callRun = await callReadOnlyFunction({
             contractAddress,
@@ -345,7 +350,22 @@ export const Dashboard = () => {
             />
           );
         } catch (e) {
-          console.log("Job #", jobId, "error:", e);
+          console.log("Reading Job #", jobId, "error:", e);
+
+          rows.push(
+            <DashboardJobRow
+              key={jobId}
+              jobId={jobId}
+              contract={result.contract.value}
+              cost={result.cost.value}
+              fee={result.fee.value}
+              executions={result.executions.value}
+              lastExecuted={result["last-executed"].value}
+              enabled={result.enabled.value}
+              shouldRun={false}
+              currentBlock={blockHeight}
+            />
+          );
         }
       }
       return rows;

@@ -77,6 +77,7 @@ const run = async () => {
       console.log("\nJob #", jobId);
 
       const jobInfo = await getJobInfo(jobId);
+      console.log(" - JobInfo: ", jobInfo);
       const jobContract = jobInfo["contract"].value;
       const jobFee =  jobInfo["fee"].value;
       const shouldExecute = await shouldRun(jobId, jobContract);
