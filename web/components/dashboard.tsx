@@ -318,6 +318,7 @@ export const Dashboard = () => {
           result = cvToJSON(call).value;
         } catch (e) {
           console.log("Fetching Job #", jobId, "error:", e);
+          continue;
         }
   
         try {
