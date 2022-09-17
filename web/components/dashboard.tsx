@@ -31,7 +31,7 @@ import {
 } from '@stacks/transactions';
 
 export const Dashboard = () => {
-  const stxAddress = 'SP1Y6ZAD2ZZFKNWN58V8EA42R3VRWFJSGWFAD9C36'; // useSTXAddress();
+  const stxAddress = useSTXAddress();
   const { doContractCall } = useConnect();
   const { doOpenAuth } = useConnect();
 
