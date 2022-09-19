@@ -303,6 +303,7 @@ export const Dashboard = () => {
       let rows = [];
 
       for (const jobId of jobIds) {
+        let result;
         try {
           const call = await callReadOnlyFunction({
             contractAddress,
@@ -314,8 +315,13 @@ export const Dashboard = () => {
             senderAddress: stxAddress || '',
             network: network,
           });
-          const result = cvToJSON(call).value;
+          result = cvToJSON(call).value;
+        } catch (e) {
+          console.log("Fetching Job #", jobId, "error:", e);
+          continue;
+        }
   
+        try {
           const jobContract = result.contract.value;
           const callRun = await callReadOnlyFunction({
             contractAddress,
@@ -341,11 +347,28 @@ export const Dashboard = () => {
               lastExecuted={result["last-executed"].value}
               enabled={result.enabled.value}
               shouldRun={resultRun}
+              error={''}
               currentBlock={blockHeight}
             />
           );
         } catch (e) {
-          console.log("Job #", jobId, "error:", e);
+          console.log("Reading Job #", jobId, "error:", e);
+
+          rows.push(
+            <DashboardJobRow
+              key={jobId}
+              jobId={jobId}
+              contract={result.contract.value}
+              cost={result.cost.value}
+              fee={result.fee.value}
+              executions={result.executions.value}
+              lastExecuted={result["last-executed"].value}
+              enabled={result.enabled.value}
+              shouldRun={false}
+              error={e.toString()}
+              currentBlock={blockHeight}
+            />
+          );
         }
       }
       return rows;
