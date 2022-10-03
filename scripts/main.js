@@ -1,5 +1,6 @@
 require('dotenv').config();
 const APP_ADDRESS = process.env.APP_ADDRESS;
+const KEEPER_ADDRESS = process.env.KEEPER_ADDRESS;
 const tx = require('@stacks/transactions');
 const utils = require('./utils');
 const network = utils.resolveNetwork();
@@ -46,7 +47,8 @@ async function shouldRun(jobId, contract) {
   return tx.cvToJSON(result).value.value;
 }
 
-const executeJob = async (jobId, contract, fee) => {
+const executeJob = async (jobId, contract, fee, nonce) => {
+  console.log(" - Execute " + jobId + " with nonce " + nonce);
   const txOptions = {
     contractAddress: APP_ADDRESS,
     contractName: "arkadiko-job-registry-v1-1",
@@ -59,11 +61,17 @@ const executeJob = async (jobId, contract, fee) => {
     senderKey: process.env.KEEPER_PRIVATE_KEY,
     postConditionMode: 1,
     fee: fee,
+    nonce: nonce,
     network
   };
 
   const transaction = await tx.makeContractCall(txOptions);
-  const result = tx.broadcastTransaction(transaction, network);
+  const result = await tx.broadcastTransaction(transaction, network);
+  if (result.reason == "ConflictingNonceInMempool") {
+    return await executeJob(jobId, contract, fee, nonce+1);
+  } else if (result.reason == "BadNonce"){
+    return await executeJob(jobId, contract, fee, result.reason_data.expected);
+  }
   return await utils.waitForTransactionCompletion(transaction.txid());
 };
 
@@ -88,7 +96,8 @@ const run = async () => {
       if (shouldExecute) {
         console.log(" - Fee:", jobFee / 1000000, "STX");
 
-        const executionResult = await executeJob(jobId, jobContract, jobFee);
+        const nonce = await utils.getNonce(KEEPER_ADDRESS);
+        const executionResult = await executeJob(jobId, jobContract, jobFee, nonce);
         console.log(" - Result:", executionResult);
       }
 
