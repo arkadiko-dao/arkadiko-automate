@@ -30,10 +30,13 @@ const executeJob = async (jobId, contract, fee, nonce) => {
 };
 
 const execute = async () => {
+
+  // Job info
   const jobId = 5;
   const jobContract = "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.job-diko-liquidation-rewards-v1";
   const jobFee = 0.01 * 1000000;
 
+  // Execute
   const nonce = await utils.getNonce(KEEPER_ADDRESS);
   const executionResult = await executeJob(jobId, jobContract, jobFee, nonce);
   console.log("Execution result:", executionResult);
