@@ -1,5 +1,6 @@
 # Arkadiko Automate
-https://www.arkadiko.finance/
+https://keepers.arkadiko.finance/
+https://keepersapp.arkadiko.finance/
 
 Smart Contract Automation simplified, like IFTTT model (If This Happens, Then Execute That).
 
